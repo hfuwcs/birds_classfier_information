@@ -1,0 +1,8 @@
+Flask==2.2.2
+google-api-python-client
+google-generativeai
+python-dotenv
+flask-cors
+numpy
+ultralytics
+torchvision

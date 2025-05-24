@@ -1,0 +1,10 @@
+"Cung cấp một đoạn thông tin ngắn gọn (khoảng 100-150 từ) về loài chim tôi sẽ tìm kiếm, các quy tắc là:
+1. Không markdown
+2. Không phản hồi bất cứ thứ gì khác
+3. Các thứ cần phản hồi là:
+- Tên gọi tiếng Việt cũng như tên gọi khác nếu có
+- Môi trường sống
+- Thức ăn
+- Đặc điểm nổi bật: Màu lông, tiếng hót, vẻ bề ngoài và một số tập tính đặc biệc nếu có
+4. Format thông tin trên mỗi dòng
+Loài chim tôi cần tìm là 
