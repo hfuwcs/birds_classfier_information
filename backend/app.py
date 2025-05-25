@@ -2,7 +2,8 @@ import os
 import time
 import cv2
 import numpy as np
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
+import json
 from werkzeug.utils import secure_filename
 from ultralytics import YOLO
 import requests
@@ -14,7 +15,6 @@ from torchvision.models import efficientnet_b3, EfficientNet_B3_Weights
 from googleapiclient.discovery import build
 import google.generativeai as genai
 from dotenv import load_dotenv
-from flask_cors import CORS
 
 # --- Load environment variables ---
 load_dotenv()
@@ -48,6 +48,18 @@ GOOGLE_CSE_ID = os.getenv('GOOGLE_CSE_ID')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
+birds_data_list = []
+try:
+    with open(os.path.join(app.static_folder, 'birds_data.json'), 'r', encoding='utf-8') as f:
+        birds_data_list = json.load(f)
+    print(f"Successfully loaded {len(birds_data_list)} bird records from birds_data.json.")
+except FileNotFoundError:
+    print("Error: birds_data.json not found in static folder.")
+except json.JSONDecodeError:
+    print("Error: Could not decode birds_data.json.")
+except Exception as e:
+    print(f"An unexpected error occurred loading birds_data.json: {e}")
+
 # Kiểm tra xem các biến môi trường đã được đặt chưa
 if not GOOGLE_CSE_ID or not GOOGLE_API_KEY or not GEMINI_API_KEY:
     print("Lỗi: Vui lòng đặt các biến môi trường GOOGLE_CSE_ID, GOOGLE_API_KEY và GEMINI_API_KEY.")
@@ -66,7 +78,7 @@ gemini_model = None
 if GEMINI_API_KEY:
     try:
         genai.configure(api_key=GEMINI_API_KEY)
-        gemini_model = genai.GenerativeModel('gemini-2.5-flash-preview-04-17')
+        gemini_model = genai.GenerativeModel('gemini-1.5-flash') # Updated model name as per common practice, adjust if specific version needed
         print("Gemini API model configured.")
     except Exception as e:
         print(f"Lỗi khi cấu hình Gemini API model: {e}")
@@ -135,7 +147,7 @@ CLASSIFIER_IMG_SIZE = 300
 CLASSIFIER_NORM_MEAN = [0.485, 0.456, 0.406]
 CLASSIFIER_NORM_STD = [0.229, 0.224, 0.225]
 
-# --- Danh sách lớp chim (giữ nguyên) ---
+# --- Danh sách lớp chim ---
 CLASSIFIER_CLASSES = [
 "Abert's_Towhee",
     "Acadian_Flycatcher",
@@ -681,33 +693,57 @@ classifier_transform = transforms.Compose([
 ])
 
 
+# --- Các routes mới cho website thư viện ---
+@app.route('/')
+def home_page():
+    return render_template('home.html')
+
+@app.route('/library')
+def library_index_page():
+    return render_template('library_index.html')
+
+@app.route('/library/bird_detail')
+def library_bird_detail_page():
+    return render_template('bird_info.html')
+
+@app.route('/news')
+def news_page():
+    # Giả sử bạn có news.html trong templates
+    return render_template('news.html')
+
+@app.route('/about')
+def about_page():
+    # Giả sử bạn có about.html trong templates
+    return render_template('about.html')
+
+# --- Route cho công cụ phát hiện ---
+@app.route('/detection_tool')
+def detection_tool_page():
+    # Đây là trang upload ảnh, tên cũ là index()
+    return render_template('detection_page.html', result_image=None, detection_results=None, error_message=None)
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def index():
-    # Truyền None cho result_image và detection_results khi render lần đầu
-    return render_template('index.html', result_image=None, detection_results=None, error_message=None)
-
 @app.route('/predict', methods=['POST'])
 def predict():
     if yolo_model is None:
-        return render_template('index.html', error_message="Error: YOLO model could not be loaded.")
+        return render_template('detection_page.html', error_message="Error: YOLO model could not be loaded.")
     if classifier_model is None:
-        return render_template('index.html', error_message="Error: Classifier model could not be loaded.")
+        return render_template('detection_page.html', error_message="Error: Classifier model could not be loaded.")
     # Kiểm tra API clients
     if cse_service is None or gemini_model is None:
-         return render_template('index.html', error_message="Error: Google API clients could not be initialized. Check API keys and CSE ID.")
+         return render_template('detection_page.html', error_message="Error: Google API clients could not be initialized. Check API keys and CSE ID.")
 
 
     if 'image' not in request.files:
-        return redirect(request.url)
+        return render_template('detection_page.html', error_message="No image file selected.", result_image=None, detection_results=None)
 
     file = request.files['image']
-
     if file.filename == '':
-        return redirect(request.url)
+        return render_template('detection_page.html', error_message="No image file selected.", result_image=None, detection_results=None)
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
@@ -720,33 +756,31 @@ def predict():
         try:
             img = cv2.imread(upload_filepath)
             if img is None:
-                 return render_template('index.html', error_message="Error: Could not read the uploaded image.")
+                 return render_template('detection_page.html', error_message="Error: Could not read the uploaded image.")
 
-            results = yolo_model(upload_filepath)
+            results = yolo_model(upload_filepath) 
             yolo_detections = results[0]
-
             annotated_img = img.copy()
 
-            # --- Xử lý từng bounding box ---
             for i, box in enumerate(yolo_detections.boxes):
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 yolo_conf = float(box.conf[0])
                 cls_id = int(box.cls[0])
                 yolo_class_name = yolo_model.names[cls_id]
 
-                species_name = "N/A"
+                species_name_from_classifier = "N/A" 
                 species_conf = None
-                species_info = "Không thể lấy thông tin chi tiết." 
-                image_urls = []
-                audio_urls = []
+                species_info_gemini = "Không thể lấy thông tin chi tiết."
+                google_image_urls = []
+                xeno_canto_audio_urls = []
+                library_detail_url = None 
 
                 # --- Phân loại loài chim ---
                 try:
                     y1_crop = max(0, y1)
                     x1_crop = max(0, x1)
                     y2_crop = min(img.shape[0], y2)
-                    x2_crop = min(img.shape[1], img.shape[1]) # Sửa lỗi chính tả ở đây
-                    x2_crop = min(img.shape[1], x2) # Sửa lỗi chính tả ở đây
+                    x2_crop = min(img.shape[1], x2) # Corrected line
 
                     cropped_img = img[y1_crop:y2_crop, x1_crop:x2_crop]
 
@@ -760,105 +794,123 @@ def predict():
 
                         probabilities = torch.softmax(classifier_outputs, dim=1)[0]
                         species_conf_tensor, predicted_class_index = torch.max(probabilities, 0)
-                        species_name = CLASSIFIER_CLASSES[predicted_class_index.item()]
+                        species_name_from_classifier = CLASSIFIER_CLASSES[predicted_class_index.item()]
                         species_conf = species_conf_tensor.item()
                     else:
-                         species_name = "Invalid crop"
+                         species_name_from_classifier = "Invalid crop"
                          species_conf = None
                          print(f"Skipping classification for invalid crop region: ({x1},{y1}) to ({x2},{y2})")
 
-
                 except Exception as classifier_error:
                     print(f"Error during classification for box ({x1},{y1})-({x2},{y2}): {classifier_error}")
-                    species_name = f"Classification Error"
+                    species_name_from_classifier = "Classification Error"
                     species_conf = None
                     if app.debug:
                          print(f"Classifier Error Details: {classifier_error}")
 
+                display_name_for_apis = species_name_from_classifier.replace('_', ' ')
+                actual_bird_name_for_library = display_name_for_apis 
+
+                if birds_data_list and species_name_from_classifier not in ["N/A", "Invalid crop", "Classification Error"]:
+                    found_in_json = False
+                    for bird_entry in birds_data_list:
+                        if bird_entry.get('title', '').lower() == display_name_for_apis.lower():
+                            actual_bird_name_for_library = bird_entry.get('name', display_name_for_apis) 
+                            library_detail_url = url_for('library_bird_detail_page', name=actual_bird_name_for_library)
+                            found_in_json = True
+                            print(f"Matched '{display_name_for_apis}' with '{actual_bird_name_for_library}' in JSON for library link.")
+                            break
+                    if not found_in_json:
+                        print(f"Could not match '{display_name_for_apis}' with any 'title' in birds_data.json. Library link might be incorrect or missing.")
+
 
                 # --- Gọi Gemini API để lấy thông tin ---
-                if species_name and species_name != "N/A" and not species_name.startswith("Error") and not species_name.startswith("Invalid"):
+                if species_name_from_classifier and species_name_from_classifier != "N/A" and not species_name_from_classifier.startswith("Error") and not species_name_from_classifier.startswith("Invalid"):
                     try:
-                        clean_species_name = species_name.replace('_', ' ')
-                        gemini_response = gemini_model.generate_content(prompt + clean_species_name)
+                        # clean_species_name is display_name_for_apis
+                        gemini_response = gemini_model.generate_content(prompt + display_name_for_apis)
                         if gemini_response and gemini_response.text:
-                             species_info = gemini_response.text
-                             print(f"Đã nhận thông tin từ Gemini cho {species_name}.")
+                             species_info_gemini = gemini_response.text
+                             print(f"Đã nhận thông tin từ Gemini cho {display_name_for_apis}.")
                         else:
-                             species_info = f"Không thể lấy thông tin chi tiết từ Gemini cho loài chim {clean_species_name}."
-                             print(f"Không thể lấy thông tin từ Gemini cho {species_name}.")
+                             species_info_gemini = f"Không thể lấy thông tin chi tiết từ Gemini cho loài chim {display_name_for_apis}."
+                             print(f"Không thể lấy thông tin từ Gemini cho {display_name_for_apis}.")
 
                     except Exception as e:
-                        print(f"Lỗi khi gọi Gemini API cho {species_name}: {e}")
-                        species_info = f"Lỗi khi lấy thông tin từ Gemini." # Rút gọn thông báo lỗi trên giao diện
+                        print(f"Lỗi khi gọi Gemini API cho {display_name_for_apis}: {e}")
+                        species_info_gemini = f"Lỗi khi lấy thông tin từ Gemini." 
                         if app.debug:
                              print(f"Gemini API Error Details: {e}")
 
 
                 # --- Gọi Google Custom Search API để lấy hình ảnh ---
-                if species_name and species_name != "N/A" and not species_name.startswith("Error") and not species_name.startswith("Invalid"):
+                if species_name_from_classifier and species_name_from_classifier != "N/A" and not species_name_from_classifier.startswith("Error") and not species_name_from_classifier.startswith("Invalid"):
                     try:
-                        # Sử dụng tên loài chim đã làm sạch cho truy vấn hình ảnh
                         image_results = cse_service.cse().list(
-                            q=clean_species_name + " bird", # Thêm " bird" để kết quả chính xác hơn
+                            q=display_name_for_apis + " bird", 
                             cx=GOOGLE_CSE_ID,
                             searchType='image',
-                            num=5 # Lấy 5 hình ảnh
+                            num=5 
                         ).execute()
 
                         if 'items' in image_results:
-                            image_urls = [item['link'] for item in image_results['items']]
-                            print(f"Tìm thấy {len(image_urls)} hình ảnh cho {species_name}.")
+                            google_image_urls = [item['link'] for item in image_results['items']]
+                            print(f"Tìm thấy {len(google_image_urls)} hình ảnh cho {display_name_for_apis}.")
                         else:
-                             print(f"Không tìm thấy hình ảnh nào cho {species_name}.")
-                             image_urls = [] # Đảm bảo là danh sách rỗng
+                             print(f"Không tìm thấy hình ảnh nào cho {display_name_for_apis}.")
+                             google_image_urls = [] 
 
                     except Exception as e:
-                        print(f"Lỗi khi gọi Google Custom Search API cho {species_name}: {e}")
-                        # Không cần cập nhật species_info ở đây, chỉ để image_urls là rỗng
+                        print(f"Lỗi khi gọi Google Custom Search API cho {display_name_for_apis}: {e}")
+                        google_image_urls = []
                         if app.debug:
                              print(f"Custom Search API Error Details: {e}")
                              
-                             # Gọi API Xeno-canto
-                if species_name and species_name != "N/A" and not species_name.startswith("Error") and not species_name.startswith("Invalid"):
-                    audio_urls = get_bird_songs(species_name)
+                # Gọi API Xeno-canto
+                if species_name_from_classifier and species_name_from_classifier != "N/A" and not species_name_from_classifier.startswith("Error") and not species_name_from_classifier.startswith("Invalid"):
+                    xeno_canto_audio_urls = get_bird_songs(display_name_for_apis)
+                else:
+                    xeno_canto_audio_urls = []
+
 
                 # --- Thêm kết quả vào danh sách ---
                 detection_results_list.append({
                     'id': i + 1,
                     'yolo_class': yolo_class_name,
                     'yolo_conf': yolo_conf,
-                    'species_name': species_name,
+                    'species_name': display_name_for_apis, # Hiển thị tên đã làm sạch
                     'species_conf': species_conf,
                     'bbox': (x1, y1, x2, y2),
-                    'species_info': species_info, 
-                    'image_urls': image_urls,
-                    'audio_urls': audio_urls
+                    'species_info': species_info_gemini, 
+                    'image_urls': google_image_urls,
+                    'audio_urls': xeno_canto_audio_urls,
+                    'library_detail_url': library_detail_url # Thêm URL này
                 })
 
-                # --- Vẽ bounding box và label lên ảnh (giữ nguyên) ---
+                # --- Vẽ bounding box và label lên ảnh ---
                 if species_conf is not None and species_conf > 0.5:
-                     color = (0, 255, 0) # Xanh lá nếu phân loại tự tin
-                elif species_name.startswith("Error") or species_name.startswith("Invalid"):
-                     color = (0, 0, 255) # Đỏ nếu có lỗi phân loại
+                     color = (0, 255, 0) 
+                elif species_name_from_classifier.startswith("Error") or species_name_from_classifier.startswith("Invalid") or species_name_from_classifier == "N/A":
+                     color = (0, 0, 255) 
                 else:
-                     color = (255, 0, 0) # Xanh dương nếu phân loại không tự tin hoặc N/A
+                     color = (255, 0, 0) 
 
                 cv2.rectangle(annotated_img, (x1, y1), (x2, y2), color, 2)
 
-                # Label hiển thị tên loài chim được phân loại (nếu có) và độ tin cậy
+                label_text = display_name_for_apis
                 if species_conf is not None:
-                     label = f"{species_name} ({species_conf:.2f})" # Chỉ hiển thị tên loài chim phân loại
+                     label_text += f" ({(species_conf * 100):.0f}%)"
                 else:
-                     label = f"{species_name}" # Hiển thị N/A hoặc lỗi
+                    if species_name_from_classifier in ["Invalid crop", "Classification Error", "N/A"]:
+                        label_text = species_name_from_classifier # Show specific status if no conf
 
                 # Điều chỉnh vị trí label để không bị tràn
-                (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
+                (w, h), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
                 text_y_pos = y1 - 10
                 if text_y_pos < h + 5:
                      text_y_pos = y1 + h + 10
                      if text_y_pos > annotated_img.shape[0] - 5:
-                          text_y_pos = annotated_img.shape[0] - 5 # Đảm bảo không tràn xuống dưới
+                          text_y_pos = annotated_img.shape[0] - 5 
                 text_x_pos = x1
 
                 if text_x_pos < 0:
@@ -866,12 +918,9 @@ def predict():
                 if text_x_pos + w > annotated_img.shape[1]:
                      text_x_pos = annotated_img.shape[1] - w
 
-                # Vẽ background cho label
                 cv2.rectangle(annotated_img, (text_x_pos, text_y_pos - h - 5), (text_x_pos + w, text_y_pos), color, -1)
-
-                # Vẽ text label
-                text_color = (255, 255, 255) if color == (0, 0, 255) else (0, 0, 0) # Text trắng trên nền đỏ, text đen trên nền khác
-                cv2.putText(annotated_img, label, (text_x_pos, text_y_pos - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 1, cv2.LINE_AA)
+                text_color = (255, 255, 255) if color == (0, 0, 255) else (0, 0, 0) 
+                cv2.putText(annotated_img, label_text, (text_x_pos, text_y_pos - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 1, cv2.LINE_AA)
 
 
             # --- Lưu ảnh kết quả (giữ nguyên) ---
@@ -880,9 +929,9 @@ def predict():
             cv2.imwrite(result_filepath, annotated_img)
 
             # --- Render template với tất cả kết quả ---
-            return render_template('index.html',
+            return render_template('detection_page.html',
                                    result_image=url_for('static', filename=f'results/{result_filename}'),
-                                   detection_results=detection_results_list, # Truyền danh sách kết quả chi tiết
+                                   detection_results=detection_results_list, 
                                    error_message=None)
 
         except Exception as e:
@@ -890,11 +939,9 @@ def predict():
             if app.debug:
                  import traceback
                  traceback.print_exc()
-            # Trả về trang với thông báo lỗi
-            return render_template('index.html', error_message=f"An unexpected error occurred: {e}", result_image=None, detection_results=None)
+            return render_template('detection_page.html', error_message=f"An unexpected error occurred: {e}", result_image=None, detection_results=None)
 
-    # Trả về trang với thông báo lỗi nếu file không hợp lệ
-    return render_template('index.html', error_message="Invalid file type.", result_image=None, detection_results=None)
+    return render_template('detection_page.html', error_message="Invalid file type.", result_image=None, detection_results=None)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

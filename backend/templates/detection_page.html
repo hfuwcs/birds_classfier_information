@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Phát hiện & Phân loại Chim</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('home_page') }}">BirdGuide</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
+                <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+                <li><a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a></li>
+                <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
+                <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
+            </ul>
+            <!-- Search bar có thể không cần thiết ở đây, hoặc trỏ về /library -->
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Công cụ Phát hiện & Phân loại Loài Chim</h1>
+        <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" class="upload-form">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="submit">Tải lên và Dự đoán</button>
+        </form>
+
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+
+        {% if result_image %}
+            <div class="result-container">
+                <h2>Kết quả Phát hiện trên Ảnh:</h2>
+                <img src="{{ result_image }}" alt="Kết quả Phát hiện và Phân loại">
+            </div>
+
+            {% if detection_results %}
+                <div class="detection-details">
+                    <h2>Chi tiết các Loài Chim được Phát hiện:</h2>
+                    {% for detection in detection_results %}
+                        <div class="bird-result">
+                            <h3>Chim {{ loop.index }}</h3>
+                            <p><strong>Phát hiện YOLO:</strong> {{ detection.yolo_class }} (Độ tin cậy: {{ detection.yolo_conf | round(2) }})</p>
+                            <p><strong>Phân loại Loài:</strong> {{ detection.species_name }} (Độ tin cậy: {% if detection.species_conf is not none %}{{ detection.species_conf | round(2) }}{% else %}N/A{% endif %})</p>
+
+                            {# Thêm liên kết đến thư viện #}
+                            {% if detection.library_detail_url %}
+                                <p><a href="{{ detection.library_detail_url }}" class="library-link" target="_blank">Xem chi tiết về {{ detection.species_name }} trong thư viện <i class="fas fa-external-link-alt"></i></a></p>
+                            {% endif %}
+
+                            {% if detection.species_info and detection.species_info != "Không thể lấy thông tin chi tiết." %}
+                                <div class="species-info">
+                                    <h4>Thông tin về Loài {{ detection.species_name }}:</h4>
+                                    <p>{{ detection.species_info }}</p>
+                                </div>
+                            {% elif detection.species_info %}
+                                <p class="info-unavailable">{{ detection.species_info }}</p>
+                            {% endif %}
+
+                            {% if detection.image_urls %}
+                                <div class="image-gallery">
+                                    <h4>Hình ảnh của Loài {{ detection.species_name }}:</h4>
+                                    <div class="gallery-grid">
+                                        {% for image_url in detection.image_urls %}
+                                            <img src="{{ image_url }}" alt="Hình ảnh của {{ detection.species_name }}">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
+                                <p class="info-unavailable">Không tìm thấy hình ảnh nào cho loài chim {{ detection.species_name }}.</p>
+                            {% endif %}
+
+                            {% if detection.audio_urls %}
+                                <div class="audio-gallery">
+                                    <h4>Tiếng hót của Loài {{ detection.species_name }}:</h4>
+                                    <div class="audio-list">
+                                        {% for audio_url in detection.audio_urls %}
+                                            <p>Bản ghi {{ loop.index }}: <audio controls src="{{ audio_url }}">
+                                                Trình duyệt của bạn không hỗ trợ phần tử audio.
+                                                <a href="{{ audio_url }}">Tải về bản ghi âm</a>.
+                                            </audio></p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
+                                <p class="info-unavailable">Không tìm thấy bản ghi âm tiếng hót nào trên Xeno-Canto cho loài chim {{ detection.species_name }}.</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+</body>
+</html>

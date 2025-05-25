@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirdGuide - Trang chủ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hero-section {
+            background: url('https://source.unsplash.com/1600x800/?bird,nature') no-repeat center center/cover; /* Random bird/nature image */
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-section::before { /* Overlay for better text readability */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .hero-section p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-section .btn-explore {
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .hero-section .btn-explore:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+        }
+
+        .featured-section {
+            padding: 50px 0;
+            text-align: center;
+        }
+        .featured-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #2c5e46;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="home.html">BirdGuide</a>
+            </div>
+            <ul class="nav-links">
+                <a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a>
+            <a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a>
+            <a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a>
+            <a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a>
+            <a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a>
+            </ul>
+            <div class="search-container">
+                <form action="{{ url_for('library_index_page') }}" method="GET">
+                    <input type="text" id="bird-search-input-home" name="query" placeholder="Tìm kiếm loài chim...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Chào mừng đến với BirdGuide</h1>
+                <p>Khám phá vẻ đẹp và sự đa dạng của các loài chim Bắc Mỹ. Tìm hiểu thông tin, xem hình ảnh và đọc các bài báo về của chúng.</p>
+                <a href="{{ url_for('library_index_page') }}" class="btn-explore">Khám phá ngay</a>
+            </div>
+        </section>
+
+        <section class="featured-section container">
+            <h2>Loài chim nổi bật</h2>
+            <div class="bird-grid" id="featured-birds-grid">
+                <!-- Featured birds will be loaded here by JS -->
+            </div>
+        </section>
+        
+        <section class="container page-content">
+            <h2>Tại sao lại là BirdGuide?</h2>
+            <p>BirdGuide là một nguồn tài nguyên toàn diện dành cho những người yêu chim, các nhà nghiên cứu và bất kỳ ai tò mò về thế giới chim phong phú. Sứ mệnh của chúng tôi là cung cấp thông tin chính xác, hấp dẫn và dễ tiếp cận về các loài chim, thúc đẩy sự trân trọng và bảo tồn.</p>
+            <p>Duyệt qua thư viện rộng lớn của chúng tôi, tìm hiểu về các đặc điểm độc đáo, môi trường sống và hành vi của từng loài. Với hình ảnh chất lượng cao và mô tả chi tiết, BirdGuide là người bạn đồng hành hoàn hảo cho cuộc phiêu lưu ngắm chim tiếp theo của bạn.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+        <script>
+        
+        var birdsDataJsonUrl = "{{ url_for('static', filename='birds_data.json') }}";
+        var birdDetailBaseUrl = "{{ url_for('library_bird_detail_page', name='PLACEHOLDER') }}";
+
+        function getBirdCategoryHome(bird) {
+            const commonNameParts = bird.name.split(' ');
+            const titleParts = bird.title ? bird.title.split(' ') : [];
+            let potentialCategoryWord = "";
+
+            if (titleParts.length > 0) {
+                potentialCategoryWord = titleParts[titleParts.length - 1];
+            }
+             if (!potentialCategoryWord || potentialCategoryWord.toLowerCase() === commonNameParts[commonNameParts.length -1].toLowerCase() || titleParts.length <=1 ) {
+                 potentialCategoryWord = commonNameParts[commonNameParts.length - 1];
+            }
+
+            const commonCategories = ["Albatross", "Ani", "Auklet", "Blackbird", "Bobolink", "Bunting", "Cardinal", "Catbird", "Chat", "Towhee", "Cormorant", "Cowbird", "Creeper", "Crow", "Cuckoo", "Finch", "Flicker", "Flycatcher", "Frigatebird", "Fulmar", "Gadwall", "Goldfinch", "Grackle", "Grebe", "Grosbeak", "Guillemot", "Gull", "Hummingbird", "Jaeger", "Jay", "Junco", "Kingbird", "Kingfisher", "Kittiwake", "Lark", "Loon", "Mallard", "Meadowlark", "Merganser", "Mockingbird", "Nighthawk", "Nutcracker", "Nuthatch", "Oriole", "Ovenbird", "Pelican", "Pewee", "Phoebe", "Pipit", "Puffin", "Raven", "Redstart", "Roadrunner", "Shrike", "Sparrow", "Starling", "Swallow", "Tanager", "Tern", "Thrasher", "Vireo", "Warbler", "Waterthrush", "Waxwing", "Woodpecker", "Wren", "Yellowthroat", "Titmouse", "Heron", "Solitaire", "Duck", "Hawk", "Owl", "Scoter", "Eagle", "Dove", "Chickadee", "Siskin", "Skimmer", "Quail", "Egret", "Teal", "Pigeon", "Turkey", "Crossbill", "Oystercatcher", "Anhinga", "Grouse", "Vulture", "Kite", "Sanderling", "Phalarope", "Crane", "Falcon", "Goose", "Thrush", "Dipper", "Avocet", "Plover", "Gallinule", "Ibis", "Stork", "Godwit", "Swift", "Parakeet", "Sayornis", "Petrochelidon", "Geococcyx", "Aegithalidae"];
+
+            if (bird.name === "Merlin" && bird.description.toLowerCase().includes("mythical figure")) return "MYTHICAL";
+            if (bird.name === "Merlin") return "FALCONS";
+            if (bird.name === "Redhead" && bird.description.toLowerCase().includes("human hair color")) return "HUMAN TRAIT";
+            if (bird.name === "Redhead") return "DUCKS";
+            if (bird.name === "Sayornis") return "PHOEBES";
+            if (bird.name === "Petrochelidon") return "SWALLOWS";
+            if (bird.name === "Geococcyx") return "ROADRUNNERS";
+            if (bird.name === "Aegithalidae") return "BUSHTITS";
+
+            let categoryText = potentialCategoryWord.toUpperCase();
+             if (commonCategories.some(c => c.toLowerCase() === potentialCategoryWord.toLowerCase())) {
+                if (potentialCategoryWord.endsWith('s')) {
+                    categoryText = potentialCategoryWord.toUpperCase();
+                } else if (potentialCategoryWord.endsWith('y') && potentialCategoryWord.length > 1) {
+                    categoryText = potentialCategoryWord.slice(0, -1).toUpperCase() + "IES";
+                } else if (potentialCategoryWord.toLowerCase() === "goose") {
+                    categoryText = "GEESE";
+                } else if (potentialCategoryWord.toLowerCase() === "mouse") {
+                    categoryText = "TITMICE"
+                }else {
+                    categoryText = potentialCategoryWord.toUpperCase() + "S";
+                }
+                return categoryText;
+            }
+            return "BIRDS";
+        }
+
+        async function loadFeaturedBirds() {
+            const featuredGrid = document.getElementById('featured-birds-grid');
+            if (!featuredGrid) return;
+
+            try {
+                const response = await fetch(birdsDataJsonUrl);
+                if (!response.ok) throw new Error('Failed to fetch bird data');
+                const allBirds = await response.json();
+                
+                // Get 3-4 random birds or first ones for simplicity
+                const featuredBirds = allBirds.sort(() => 0.5 - Math.random()).slice(0, 4); 
+
+                featuredGrid.innerHTML = '';
+                featuredBirds.forEach(bird => {
+                    const card = document.createElement('div');
+                    card.className = 'bird-card';
+                    card.setAttribute('role', 'link');
+                    card.setAttribute('tabindex', '0');
+                    card.setAttribute('aria-label', `Xem chi tiết về ${bird.name}`);
+
+
+                    card.addEventListener('click', () => {
+                        const detailUrl = birdDetailBaseUrl.replace('PLACEHOLDER', encodeURIComponent(bird.name));
+                        window.location.href = detailUrl;
+                    });
+                    card.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            const detailUrl = birdDetailBaseUrl.replace('PLACEHOLDER', encodeURIComponent(bird.name));
+                            window.location.href = detailUrl;
+                        }
+                    });
+
+                    const img = document.createElement('img');
+                    img.className = 'card-bg-image';
+                    img.src = bird.image_url || 'https://via.placeholder.com/260x360?text=No+Image';
+                    img.alt = bird.name;
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'bird-card-overlay';
+
+                    const nameH3 = document.createElement('h3');
+                    nameH3.textContent = bird.name;
+
+                    const categoryP = document.createElement('p');
+                    categoryP.className = 'bird-category';
+                    categoryP.textContent = getBirdCategoryHome(bird);
+
+                    overlay.appendChild(nameH3);
+                    overlay.appendChild(categoryP);
+
+                    card.appendChild(img);
+                    card.appendChild(overlay);
+                    featuredGrid.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading featured birds:", error);
+                if (featuredGrid) {
+                    featuredGrid.innerHTML = "<p>Không thể tải các loài chim nổi bật.</p>";
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadFeaturedBirds);
+    </script>
+</body>
+</html>

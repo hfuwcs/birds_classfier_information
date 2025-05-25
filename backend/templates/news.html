@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin tức - BirdGuide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+    <div class="logo">
+        <a href="{{ url_for('home_page') }}">BirdGuide</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
+        <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+        <li><a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a></li>
+        <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
+        <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
+    </ul>
+    <div class="search-container">
+        {# Sửa action của form tìm kiếm để trỏ đến trang library_index_page với query #}
+        <form action="{{ url_for('library_index_page') }}" method="GET">
+            <input type="text" id="bird-search-input-nav" name="query" placeholder="Tìm kiếm trong thư viện...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</nav>
+    </header>
+
+    <main class="container">
+        <div class="page-hero">
+            <h1>Tin tức & Cập nhật</h1>
+            <p>Theo dõi những tin tức mới nhất về các loài chim, các nỗ lực bảo tồn và các sự kiện sắp tới.</p>
+        </div>
+
+        <section class="news-grid">
+            <article class="news-article-card">
+                <img src="https://genk.mediacdn.vn/139269124445442048/2022/9/7/gettyimages-641101778-b5ce934c6bcf428abf993f722af580d3-16623838172121455196623-1662522699126-16625226994291801499191.jpg" alt="Tin tức 1">
+                <div class="news-article-content">
+                    <h3>Mùa di cư mùa xuân bắt đầu sớm hơn dự kiến</h3>
+                    <p class="article-meta">Ngày 15 tháng 3, 2025 - Bởi John Doe</p>
+                    <p class="article-excerpt">Các nhà nghiên cứu nhận thấy nhiều loài chim đang bắt đầu hành trình di cư về phương bắc sớm hơn vài tuần do biến đổi khí hậu...</p>
+                    <a href="#" class="read-more">Đọc thêm »</a>
+                </div>
+            </article>
+
+            <article class="news-article-card">
+                <img src="https://aquariumcare.vn/upload/sanpham/chim-vang-anh-loai-chim-dep-va-quy-hiem.jpeg" alt="Tin tức 2">
+                <div class="news-article-content">
+                    <h3>Nỗ lực bảo tồn loài Vàng Anh Gáy Đen mang lại kết quả</h3>
+                    <p class="article-meta">Ngày 10 tháng 3, 2025 - Bởi Jane Smith</p>
+                    <p class="article-excerpt">Một chương trình phục hồi môi trường sống kéo dài 5 năm đã cho thấy sự gia tăng đáng kể số lượng Vàng Anh Gáy Đen...</p>
+                    <a href="#" class="read-more">Đọc thêm »</a>
+                </div>
+            </article>
+
+            <article class="news-article-card">
+                <img src="https://drnhan.vn/stmresource/files/chim-chao-mao/cach-lam-thuc-an-cho-chim-chao-mao-tai-nha-2.jpg" alt="Tin tức 3">
+                <div class="news-article-content">
+                    <h3>Hướng dẫn làm thức ăn cho chim tại nhà mùa đông</h3>
+                    <p class="article-meta">Ngày 5 tháng 3, 2025 - Bởi BirdGuide Team</p>
+                    <p class="article-excerpt">Tìm hiểu cách tạo ra những món ăn bổ dưỡng giúp các loài chim vượt qua mùa đông khắc nghiệt ngay tại sân vườn của bạn...</p>
+                    <a href="#" class="read-more">Đọc thêm »</a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+</body>
+</html>

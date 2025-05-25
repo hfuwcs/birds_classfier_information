@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về chúng tôi - BirdGuide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+    <div class="logo">
+        <a href="{{ url_for('home_page') }}">BirdGuide</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
+        <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+        <li><a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a></li>
+        <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
+        <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
+    </ul>
+    <div class="search-container">
+        {# Sửa action của form tìm kiếm để trỏ đến trang library_index_page với query #}
+        <form action="{{ url_for('library_index_page') }}" method="GET">
+            <input type="text" id="bird-search-input-nav" name="query" placeholder="Tìm kiếm trong thư viện...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</nav>
+    </header>
+
+    <main class="container">
+        <div class="page-hero">
+            <h1>Về BirdGuide</h1>
+            <p>Tìm hiểu thêm về sứ mệnh, đội ngũ và niềm đam mê của chúng tôi đối với thế giới các loài chim.</p>
+        </div>
+
+        <section class="page-content">
+            <h2>Sứ mệnh của chúng tôi</h2>
+            <p>Tại BirdGuide, chúng tôi tin rằng việc hiểu biết và trân trọng thế giới tự nhiên là bước đầu tiên để bảo vệ nó. Sứ mệnh của chúng tôi là cung cấp một nền tảng toàn diện, dễ tiếp cận và hấp dẫn cho tất cả mọi người, từ những người mới bắt đầu quan sát chim đến các nhà nghiên cứu dày dạn kinh nghiệm, để khám phá và tìm hiểu về sự đa dạng đáng kinh ngạc của các loài chim Bắc Mỹ.</p>
+            <p>Chúng tôi cố gắng truyền cảm hứng cho sự tò mò, thúc đẩy giáo dục và khuyến khích các nỗ lực bảo tồn để đảm bảo rằng các thế hệ tương lai cũng có thể tận hưởng vẻ đẹp và kỳ quan của các loài chim trong môi trường sống tự nhiên của chúng.</p>
+
+            <h2>Đội ngũ của chúng tôi</h2>
+            <p>BirdGuide được xây dựng và duy trì bởi một nhóm nhỏ những người đam mê chim, nhà phát triển web và nhà thiết kế. Chúng tôi kết hợp tình yêu của mình đối với công nghệ và thiên nhiên để tạo ra một nguồn tài nguyên hữu ích và thú vị.</p>
+            
+            <h2>Liên hệ với chúng tôi</h2>
+            <p>Chúng tôi luôn muốn lắng nghe từ bạn! Nếu bạn có bất kỳ câu hỏi, đề xuất hoặc muốn đóng góp cho BirdGuide, vui lòng liên hệ với chúng tôi qua email tại <a href="mailto:hungphi1610@gmail.com">hungphi1610@gmail.com</a>.</p>
+            <p>Cảm ơn bạn đã ghé thăm BirdGuide!</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết loài chim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+        /* Style cho phần "Loài chim khác" */
+        .featured-section { margin-top: 3em; } /* Điều chỉnh margin top */
+
+        .featured-section h2 {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em; /* Kích thước như bạn muốn */
+            margin-bottom: 1em;
+            color: #FFFFFF; /* <-- Đã sửa: Đổi màu chữ từ black sang trắng */
+            font-weight: 700; /* Đảm bảo đậm */
+        }
+
+        .bird-grid-wrapper {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            padding: 10px 0; /* Thêm padding nếu muốn hiệu ứng thẻ tràn nhẹ */
+        }
+        .bird-grid {
+            display: flex;
+            gap: 1em;
+            /* Animation sẽ được thêm vào đây hoặc bằng JS để nhân đôi */
+            /* animation: scroll-horizontal 30s linear infinite; */ /* Bỏ animation CSS nếu dùng JS duplication */
+        }
+        /*
+           @keyframes scroll-horizontal {
+               0% { transform: translateX(0); }
+               100% { transform: translateX(-50%); }
+           }
+        */
+
+        .bird-card {
+            flex: 0 0 240px; /* Giữ kích thước thẻ */
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* Bóng đổ tối */
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            background-color: #2D3748; /* Nền phòng khi ảnh không tải */
+        }
+        .bird-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Bóng đổ đậm hơn khi hover */
+        }
+        .bird-card img {
+            width: 100%;
+            height: 300px; /* Chiều cao ảnh */
+            object-fit: cover;
+            object-position: center 30%; /* Giữ lại vị trí ảnh nếu cần */
+            z-index: 1; /* Đảm bảo ảnh nằm dưới overlay khi scale */
+            transition: transform 0.35s ease-out;
+        }
+         .bird-card:hover img { /* Hiệu ứng scale ảnh khi hover thẻ */
+            transform: scale(1.1);
+        }
+
+        .bird-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            /* Gradient nền tối phù hợp */
+            background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0) 100%);
+            color: #fff; /* Chữ trắng */
+            padding: 0.8em; /* Tăng padding nhẹ */
+            text-align: center;
+            z-index: 2; /* Đảm bảo overlay nằm trên ảnh */
+        }
+
+        .bird-card-overlay h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            font-size: 1.1em; /* Kích thước tiêu đề thẻ */
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .bird-card-overlay .bird-category {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.85em; /* Kích thước chữ category */
+            color: #CBD5E0; /* Màu xám nhạt hơn */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Các style khác từ style.css sẽ áp dụng */
+        /* .container (from style.css) */
+        /* .breadcrumb (from style.css) */
+        /* .bird-header (from style.css) */
+        /* .bird-info-detail (from style.css) */
+        /* section.bird-section (from style.css) */
+        /* back-link (from style.css) */
+
+    </style>
+</head>
+<body class="bird-detail-page"> <!-- Added class for specific styling from style.css -->
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('home_page') }}">BirdGuide</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
+                <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+                <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
+                <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
+            </ul>
+            <div class="search-container">
+                <form action="{{ url_for('library_index_page') }}" method="GET">
+                    <input type="text" id="bird-search-input-detail" name="query" placeholder="Tìm kiếm loài chim...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Breadcrumb will inherit styles from style.css .bird-detail-page .breadcrumb -->
+        <div class="breadcrumb">
+            <a href="{{ url_for('home_page') }}">Trang chủ</a> » <a href="{{ url_for('library_index_page') }}">Khám phá</a> » <span id="bird-name-breadcrumb">Chi tiết</span>
+        </div>
+
+        <!-- Bird Header will inherit styles from style.css .bird-detail-page .bird-header -->
+        <div class="bird-header">
+            <div class="bird-image">
+                <img id="bird-image-detail" src="" alt="Hình ảnh loài chim">
+            </div>
+            <!-- Bird Info Detail will inherit styles from style.css .bird-detail-page .bird-info-detail -->
+            <div class="bird-info-detail">
+                <h1 id="bird-title-detail">Tên loài chim</h1>
+                <p class="scientific-name" id="bird-scientific-name">Scientific name</p>
+                <!-- Status span will inherit styles from style.css .bird-detail-page .bird-info-detail .status -->
+                <span class="status" id="bird-status-detail">Tình trạng bảo tồn</span>
+                <p id="bird-description-detail">Mô tả ngắn gọn về loài chim.</p>
+            </div>
+        </div>
+        
+        <!-- Sections will inherit styles from style.css section.bird-section -->
+        <section class="bird-section" id="identification">
+            <h2>Đặc điểm nhận dạng</h2>
+            <ul id="bird-identification-detail"></ul>
+        </section>
+        <section class="bird-section" id="habitat">
+            <h2>Môi trường sống</h2>
+            <p id="bird-habitat-detail"></p>
+        </section>
+        <section class="bird-section" id="diet">
+            <h2>Chế độ ăn</h2>
+            <p id="bird-diet-detail"></p>
+        </section>
+        <section class="bird-section" id="behavior">
+            <h2>Hành vi</h2>
+            <p id="bird-behavior-detail"></p>
+        </section>
+        
+        <!-- Featured section styles are kept in the <style> block -->
+        <section class="featured-section container">
+            <h2>Loài chim khác</h2>
+            <div class="bird-grid-wrapper">
+                <div class="bird-grid" id="featured-birds-grid">
+                    <!-- Featured birds will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Back link will inherit styles from style.css .bird-detail-page .back-link -->
+        <a href="{{ url_for('library_index_page') }}" class="back-link"><i class="fas fa-arrow-left"></i> Quay về danh sách</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+
+    <script>
+        var birdsDataJsonUrl = "{{ url_for('static', filename='birds_data.json') }}";
+        var birdDetailBaseUrl = "{{ url_for('library_bird_detail_page', name='PLACEHOLDER') }}";
+        const params = new URLSearchParams(window.location.search);
+        const birdNameQuery = params.get("name");
+
+        async function loadBirdData() {
+            const birdNameBreadcrumb = document.getElementById("bird-name-breadcrumb");
+            const birdTitleDetail = document.getElementById("bird-title-detail");
+            const birdScientificName = document.getElementById("bird-scientific-name");
+            const birdStatusDetail = document.getElementById("bird-status-detail");
+            const birdDescriptionDetail = document.getElementById("bird-description-detail");
+            const birdImageDetail = document.getElementById("bird-image-detail");
+            const birdIdentificationDetail = document.getElementById("bird-identification-detail");
+            const birdHabitatDetail = document.getElementById("bird-habitat-detail");
+            const birdDietDetail = document.getElementById("bird-diet-detail");
+            const birdBehaviorDetail = document.getElementById("bird-behavior-detail");
+
+            // Set initial state while loading
+            document.title = "Đang tải... | BirdGuide";
+            birdNameBreadcrumb.textContent = "Đang tải...";
+            birdTitleDetail.textContent = "Đang tải...";
+            birdScientificName.textContent = "";
+            birdStatusDetail.textContent = "";
+            birdDescriptionDetail.textContent = "Đang tải thông tin...";
+            birdImageDetail.src = 'https://via.placeholder.com/600x400?text=Loading...';
+            birdImageDetail.alt = "Loading image";
+            birdIdentificationDetail.innerHTML = '';
+            birdHabitatDetail.textContent = '';
+            birdDietDetail.textContent = '';
+            birdBehaviorDetail.textContent = '';
+
+
+            if (!birdNameQuery) {
+                document.title = "Không có loài chim nào được chọn | BirdGuide";
+                birdNameBreadcrumb.textContent = "Lỗi";
+                birdTitleDetail.textContent = "Không có loài chim nào được chọn";
+                birdScientificName.textContent = "";
+                birdStatusDetail.textContent = "";
+                birdDescriptionDetail.textContent = "Vui lòng chọn một loài chim từ trang danh sách.";
+                birdImageDetail.src = 'https://via.placeholder.com/600x400?text=No+Bird+Selected';
+                birdImageDetail.alt = "No bird selected";
+                return; // Stop further execution
+            }
+
+
+            try {
+                const res = await fetch(birdsDataJsonUrl);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.json();
+                // Match using the 'name' field which is the common name in Vietnamese
+                const bird = data.find(b => b.name === birdNameQuery);
+
+                if (bird) {
+                    document.title = bird.name + " | BirdGuide";
+                    birdNameBreadcrumb.textContent = bird.name;
+                    birdTitleDetail.textContent = bird.name;
+                     if (birdStatusDetail) {
+                         birdStatusDetail.textContent = bird.conservation_status || 'Mức độ bảo tồn: Chưa rõ';
+                          birdStatusDetail.className = 'status'; // Reset class
+                          if (bird.conservation_status) {
+                              const statusClass = bird.conservation_status.toLowerCase().replace(/\s+/g, '-');
+                              birdStatusDetail.classList.add('status-' + statusClass);
+                          }
+                     }
+
+
+                    birdDescriptionDetail.textContent = bird.description || 'Không có mô tả chi tiết.';
+                    birdImageDetail.src = bird.image_url || 'https://via.placeholder.com/600x400?text=No+Image';
+                    birdImageDetail.alt = bird.name;
+
+                    // Populate sections - assuming new fields from enrichment are in Vietnamese
+                    const identificationList = bird.identification || [];
+                    birdIdentificationDetail.innerHTML = identificationList.map(i => `<li>${i}</li>`).join('') || '<li>Không có thông tin.</li>';
+
+                    birdHabitatDetail.textContent = bird.habitat || 'Không có thông tin.';
+                    birdDietDetail.textContent = bird.diet || 'Không có thông tin.';
+                    birdBehaviorDetail.textContent = bird.behavior || 'Không có thông tin.';
+
+                } else {
+                    document.title = "Không tìm thấy loài chim | BirdGuide";
+                    birdNameBreadcrumb.textContent = "Lỗi";
+                    birdTitleDetail.textContent = "Không tìm thấy loài chim";
+                    birdScientificName.textContent = "";
+                     if (birdStatusDetail) birdStatusDetail.textContent = ""; // Hide status
+                    birdDescriptionDetail.textContent = `Không tìm thấy thông tin chi tiết cho "${birdNameQuery}". Vui lòng kiểm tra lại tên hoặc quay lại trang khám phá.`;
+                    birdImageDetail.src = 'https://via.placeholder.com/600x400?text=Bird+Not+Found';
+                    birdImageDetail.alt = "Bird not found";
+                     // Clear other sections
+                    birdIdentificationDetail.innerHTML = '<li>Không có thông tin.</li>';
+                    birdHabitatDetail.textContent = 'Không có thông tin.';
+                    birdDietDetail.textContent = 'Không có thông tin.';
+                    birdBehaviorDetail.textContent = 'Không có thông tin.';
+                }
+            } catch (error) {
+                console.error("Could not load bird data:", error);
+                document.title = "Lỗi tải dữ liệu | BirdGuide";
+                birdNameBreadcrumb.textContent = "Lỗi";
+                birdTitleDetail.textContent = "Lỗi tải dữ liệu";
+                 if (birdScientificName) birdScientificName.textContent = "";
+                 if (birdStatusDetail) birdStatusDetail.textContent = "";
+                birdDescriptionDetail.textContent = "Không thể tải thông tin loài chim. Vui lòng thử lại sau.";
+                birdImageDetail.src = 'https://via.placeholder.com/600x400?text=Error';
+                birdImageDetail.alt = "Error loading data";
+                 // Clear other sections
+                birdIdentificationDetail.innerHTML = '<li>Không thể tải thông tin.</li>';
+                birdHabitatDetail.textContent = 'Không thể tải thông tin.';
+                birdDietDetail.textContent = 'Không thể tải thông tin.';
+                birdBehaviorDetail.textContent = 'Không thể tải thông tin.';
+            }
+        }
+        
+        // Function to determine bird category for display in featured section cards
+        function getBirdCategoryHome(bird) {
+
+            const englishTitle = bird.title || bird.name; // Prefer English title if available
+            if (englishTitle) {
+                const parts = englishTitle.split(' ');
+                if (parts.length > 0) {
+                    // Basic attempt: take the last word and pluralize/capitalize
+                    let lastWord = parts[parts.length - 1];
+                     // Simple pluralization rule (adjust as needed)
+                    if (!lastWord.toLowerCase().endsWith('s') && lastWord.length > 1) {
+                        if (lastWord.toLowerCase().endsWith('y')) {
+                             lastWord = lastWord.slice(0, -1) + 'IES';
+                        } else {
+                             lastWord += 'S';
+                        }
+                    }
+                    return lastWord.toUpperCase();
+                }
+            }
+            // Fallback if no title or name parts
+            return "BIRDS"; 
+        }
+
+
+       async function loadFeaturedBirds() {
+            const featuredGrid = document.getElementById('featured-birds-grid');
+            if (!featuredGrid) return;
+
+            try {
+                const response = await fetch(birdsDataJsonUrl); // Use birdsDataJsonUrl
+                if (!response.ok) throw new Error('Failed to fetch bird data');
+                const allBirds = await response.json();
+
+                // Filter out the current bird from the featured list
+                const otherBirds = allBirds.filter(b => b.name !== birdNameQuery);
+                
+                // Select a random sample (adjust number as needed)
+                const selectedBirds = otherBirds.sort(() => 0.5 - Math.random()).slice(0, 12); // Get a few more for the scroll effect
+
+                // Clear previous content
+                featuredGrid.innerHTML = '';
+
+                // Append the selected birds (maybe duplicated for smoother scrolling)
+                const birdsToDisplay = selectedBirds.concat(selectedBirds); // Duplicate for infinite scroll effect
+
+                birdsToDisplay.forEach(bird => {
+                    const card = document.createElement('div');
+                    card.className = 'bird-card';
+                    card.setAttribute('role', 'link');
+                    card.setAttribute('tabindex', '0');
+                    card.setAttribute('aria-label', `Xem chi tiết về ${bird.name}`);
+
+                    // Construct the URL
+                    const birdUrl = `bird_info.html?name=${encodeURIComponent(bird.name)}`;
+                    card.dataset.href = birdUrl; // Store the URL
+
+                    // Add click and keyboard event listeners
+                    card.addEventListener('click', () => {
+                        const detailUrl = birdDetailBaseUrl.replace('PLACEHOLDER', encodeURIComponent(bird.name));
+                        window.location.href = detailUrl;
+                    });
+
+                    card.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            window.location.href = card.dataset.href;
+                        }
+                    });
+
+                    const img = document.createElement('img');
+                    img.className = 'card-bg-image';
+                    img.src = bird.image_url || 'https://via.placeholder.com/240x300?text=No+Image';
+                    img.alt = bird.name;
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'bird-card-overlay';
+
+                    const nameH3 = document.createElement('h3');
+                    nameH3.textContent = bird.name;
+
+                    const categoryP = document.createElement('p');
+                    categoryP.className = 'bird-category';
+                    categoryP.textContent = getBirdCategoryHome(bird);
+
+                    overlay.appendChild(nameH3);
+                    overlay.appendChild(categoryP);
+                    card.appendChild(img);
+                    card.appendChild(overlay);
+                    featuredGrid.appendChild(card);
+                });
+
+                // Start the animation after cards are added
+                 const birdGrid = document.getElementById('featured-birds-grid');
+                 if(birdGrid) {
+                     // Remove previous animation if any
+                     birdGrid.style.animation = 'none';
+                     void birdGrid.offsetWidth; // Trigger reflow
+                     // Add animation
+                     birdGrid.style.animation = 'scroll-horizontal 30s linear infinite';
+                 }
+
+
+            } catch (error) {
+                console.error("Error loading featured birds:", error);
+                if(featuredGrid) featuredGrid.innerHTML = "<p style='color: #A0AEC0; text-align: center;'>Không thể tải các loài chim nổi bật.</p>";
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBirdData();
+            loadFeaturedBirds();
+        });
+
+
+        const searchInput = document.getElementById('bird-search-input-detail');
+        if (searchInput) {
+        }
+
+
+    </script>
+</body>
+</html>

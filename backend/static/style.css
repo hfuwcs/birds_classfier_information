@@ -1,177 +1,700 @@
+/* ==== Import Google Fonts ==== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap');
+
+/* ==== Global Reset & Base Styles ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0; /* Đặt margin 0 để container quản lý */
-    padding: 20px;
-    text-align: center;
-    background-color: #f4f4f4; /* Màu nền nhẹ */
+  font-family: 'Lato', sans-serif; /* Font cho nội dung chính */
+  line-height: 1.65; /* Tăng line-height cho dễ đọc trên nền tối */
+  background-color: #1A202C; /* Màu nền tối chủ đạo (Audubon dark theme) */
+  color: #E2E8F0; /* Màu chữ chính (xám nhạt) */
+  font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+  color: #63B3ED; /* Màu xanh lam sáng cho liên kết */
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #90CDF4; /* Sáng hơn khi hover */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .container {
-    max-width: 900px; /* Giới hạn chiều rộng nội dung */
-    margin: 0 auto; /* Căn giữa container */
-    background: #fff; /* Nền trắng cho container */
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ nhẹ */
-    text-align: left; /* Đặt lại text-align về left cho nội dung bên trong */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+header {
+  background-color: #2D3748; /* Nền header tối hơn một chút */
+  border-bottom: 1px solid #4A5568; /* Đường viền tối hơn */
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Bóng đổ tối hơn */
 }
 
-h1, h2, h3, h4 {
-    color: #333;
-    text-align: center; /* Căn giữa các tiêu đề */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo a {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #FFFFFF; /* Logo màu trắng */
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #CBD5E0; /* Màu chữ nav link (xám nhạt) */
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 5px 0;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: #FFFFFF; /* Trắng khi active/hover */
+  border-bottom: 2px solid #63B3ED; /* Viền xanh lam sáng */
+}
+.search-container {
+  display: flex; /* Quan trọng: Làm cho input và button nằm trên một hàng */
+  align-items: stretch; /* Quan trọng: Làm cho input và button có cùng chiều cao và thẳng hàng */
+  /* Bạn có thể thêm các thuộc tính khác cho search-container nếu cần,
+     ví dụ: margin-left: auto; để đẩy nó sang phải nếu nằm trong flex container khác */
+}
+.search-container form {
+  display: flex; /* Làm cho input và button bên trong form cũng là flex items */
+  width: 100%; /* Cho form chiếm toàn bộ chiều rộng của .search-container */
+  align-items: stretch; /* Đồng bộ chiều cao cho input và button bên trong form */
+}
+.search-container input[type="text"] {
+  padding: 10px 15px;
+  border: 1px solid #4A5568;
+  background-color: #2D3748;
+  color: #E2E8F0;
+  border-right: none; /* Loại bỏ viền phải của input để nó liền với button */
+  border-radius: 20px 0 0 20px;
+  outline: none;
+  font-size: 0.9rem;
+  /* min-width: 200px; */ /* Có thể bỏ hoặc điều chỉnh */
+  flex-grow: 1; /* Cho phép input chiếm không gian còn lại */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  line-height: normal; /* Đảm bảo chiều cao chữ phù hợp */
+}
+
+.search-container input[type="text"]::placeholder {
+  color: #A0AEC0;
+}
+
+.search-container input[type="text"]:focus {
+  border-color: #63B3ED;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+}
+
+.search-container button {
+  padding: 10px 15px;
+  border: 1px solid #63B3ED;
+  /* border-left: none;  Không cần thiết nếu input đã có border-right: none; */
+  background-color: #63B3ED;
+  color: #1A202C;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  font-size: 0.9rem; /* Đảm bảo icon không quá lớn */
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Ngăn button bị co lại */
+}
+
+.search-container button:hover {
+  background-color: #4299E1;
+}
+
+/* ==== Main Content & Bird Listing (index.html) ==== */
+.bird-listing {
+  padding: 30px 0;
+}
+
+.bird-listing h1 { /* Tiêu đề "Guide to North American Birds" */
+  font-family: 'Montserrat', sans-serif; /* Hoặc "Merriweather" nếu muốn serif */
+  font-size: 2.8rem; /* Kích thước lớn như trong ảnh */
+  font-weight: 800; /* Rất đậm */
+  margin-bottom: 15px; /* Giảm margin dưới */
+  color: #FFFFFF; /* Màu trắng */
+  text-align: center;
+}
+
+/* Đoạn mô tả dưới tiêu đề lớn */
+.bird-listing-description {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.1rem;
+  color: #A0AEC0; /* Màu xám nhạt hơn cho mô tả */
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 40px auto; /* Căn giữa và thêm margin dưới */
+  line-height: 1.7;
+}
+
+
+.bird-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  gap: 24px;
+}
+
+.bird-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 360px;
+  background-size: cover;
+  background-position: center top; /* object-position: center top; đã set cho img */
+  background-repeat: no-repeat;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Bóng đổ đậm hơn trên nền tối */
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: #2D3748; /* Màu nền cho thẻ nếu ảnh không tải được */
+}
+
+.bird-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.bird-card .card-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform 0.35s ease-out;
+    .bird-card .card-bg-image {
+    /* ... */
+    /* Thử nghiệm các giá trị này: */
+    /* object-position: 50% 25%; */ /* Căn giữa ngang, dịch lên 25% từ đỉnh */
+    /* object-position: center 30%; */
+    object-position: center 30%;
+}
+}
+
+.bird-card:hover .card-bg-image {
+    transform: scale(1.1);
+}
+
+.bird-card-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  /* Gradient tối hơn và rõ ràng hơn trên nền tối */
+  background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0) 100%);
+  color: white;
+  padding: 15px; /* Tăng padding một chút */
+}
+
+.bird-card-overlay h3 { /* Bird Name */
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem; /* To hơn một chút */
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 3px; /* Giảm margin */
+  line-height: 1.2;
+  /* text-shadow: none;  Bỏ shadow vì nền overlay đã đủ tối */
+}
+
+.bird-card-overlay .bird-category { /* Bird Category (e.g., OWLS) */
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem; /* To hơn một chút */
+  font-weight: 400;
+  color: #CBD5E0; /* Sáng hơn một chút */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+
+/* ==== Bird Detail Page (bird_info.html) ==== */
+.bird-detail-page .breadcrumb {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    color: #A0AEC0; /* Màu breadcrumb xám nhạt */
+}
+.bird-detail-page .breadcrumb a {
+    color: #63B3ED; /* Xanh lam sáng */
+}
+.bird-detail-page .bird-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+    background-color: #2D3748; /* Nền tối hơn cho phần thông tin */
+    padding: 25px; /* Tăng padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.bird-detail-page .bird-image {
+    flex: 1 1 380px;
+    max-width: 450px;
+}
+.bird-detail-page .bird-image img {
+    width: 100%;
+    border-radius: 6px;
+}
+.bird-detail-page .bird-info-detail {
+    flex: 1 1 350px;
+}
+.bird-detail-page .bird-info-detail h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.4rem; /* To hơn */
+    margin-bottom: 10px;
+    color: #FFFFFF; /* Trắng */
+    line-height: 1.2;
+}
+.bird-detail-page .bird-info-detail .scientific-name {
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #A0AEC0; /* Xám nhạt */
     margin-bottom: 15px;
 }
-
-.upload-form { /* Đổi từ form sang class upload-form */
-    margin-bottom: 30px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    display: flex; /* Sử dụng flexbox để căn chỉnh input và button */
-    justify-content: center; /* Căn giữa các mục trong form */
-    align-items: center;
-    gap: 10px; /* Khoảng cách giữa input và button */
-    border-radius: 4px;
+.bird-detail-page .bird-info-detail p { /* Description */
+    font-size: 1rem; /* To hơn chút */
+    line-height: 1.7;
+    color: #CBD5E0; /* Xám nhạt hơn */
 }
-
-.upload-form input[type="file"] {
-    /* Có thể cần thêm style cho input file nếu muốn tùy chỉnh giao diện */
-}
-
-.upload-form button {
-    padding: 10px 20px;
-    background-color: #5cb85c;
-    color: white;
-    border: none;
+.bird-detail-page .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 18px;
+    background-color: #4A5568; /* Nút xám đậm */
+    color: #FFFFFF;
+    text-decoration: none;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+    font-weight: 500;
     transition: background-color 0.3s ease;
 }
-
-.upload-form button:hover {
-    background-color: #4cae4c;
+.bird-detail-page .back-link:hover {
+    background-color: #718096; /* Xám nhạt hơn khi hover */
+    text-decoration: none;
+}
+.bird-detail-page .back-link i {
+    margin-right: 8px;
 }
 
-.error-message {
-    color: red;
+/* ==== Footer ==== */
+footer {
+  background-color: #12161F; /* Nền footer rất tối */
+  color: #A0AEC0; /* Chữ footer xám nhạt */
+  padding: 50px 20px 30px;
+  margin-top: 50px;
+  font-size: 0.85rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-logo h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #FFFFFF;
+}
+.footer-logo p {
+  font-size: 0.85rem;
+  color: #718096; /* Xám đậm hơn cho tagline */
+  max-width: 250px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.footer-links h4 {
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+.footer-links a {
+  color: #A0AEC0; /* Xám nhạt */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #2D3748; /* Viền tối */
+  font-size: 0.8rem;
+  color: #718096; /* Xám đậm */
+}
+
+/* ==== Generic Page Styles (for Home, News, About) ==== */
+.page-hero { /* Ví dụ: Trang Chủ */
+    background-color: transparent; /* Nền hero sẽ là ảnh */
+    padding: 80px 20px; /* Tăng padding */
     text-align: center;
+    margin-bottom: 40px;
+    /* border-bottom: 1px solid #2D3748; */ /* Có thể bỏ border nếu dùng ảnh nền */
+}
+.page-hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem; /* To hơn */
+    color: #FFFFFF;
     margin-bottom: 20px;
-    font-weight: bold;
+    font-weight: 700;
 }
-
-.result-container {
-    margin-top: 20px;
-    text-align: center; /* Căn giữa ảnh kết quả */
+.page-hero p {
+    font-size: 1.15rem; /* To hơn */
+    color: #CBD5E0; /* Xám nhạt */
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
 }
-
-.result-container img {
-    max-width: 100%; /* Đảm bảo ảnh không tràn ra ngoài container */
-    height: auto;
-    margin-top: 10px; /* Giảm khoảng cách trên */
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
-    border-radius: 4px;
+/* Hero section đặc biệt cho trang chủ */
+.hero-section { /* Dùng cho home.html */
+    background: url('https://source.unsplash.com/1600x800/?birds,dark,forest') no-repeat center center/cover; /* Ảnh tối hơn */
+    color: white;
+    padding: 100px 20px;
+    text-align: center;
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-
-.detection-details {
-    margin-top: 30px;
-    border-top: 1px solid #eee; /* Đường kẻ phân cách */
-    padding-top: 20px;
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 15, 25, 0.65); /* Lớp phủ tối hơn */
 }
-
-.bird-result {
+.hero-section .hero-content {
+    position: relative;
+    z-index: 1;
+}
+.hero-section h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.hero-section p {
+    font-size: 1.3rem;
     margin-bottom: 30px;
-    padding: 20px;
-    border: 1px solid #dcdcdc; /* Border cho từng kết quả chim */
-    border-radius: 8px;
-    background-color: #f9f9f9; /* Nền nhẹ cho từng kết quả */
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #E2E8F0;
+}
+.hero-section .btn-explore {
+    padding: 12px 30px;
+    background-color: #63B3ED; /* Xanh lam sáng */
+    color: #1A202C; /* Chữ tối */
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.hero-section .btn-explore:hover {
+    background-color: #4299E1;
+    text-decoration: none;
+}
+.featured-section h2 { /* Tiêu đề "Loài chim nổi bật" */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    color: #FFFFFF; /* Trắng */
+    text-align: center;
 }
 
-.bird-result h3 {
-    margin-top: 0;
-    color: #555;
-    text-align: left; /* Căn trái tiêu đề chim */
-    border-bottom: 1px dashed #ccc; /* Đường gạch dưới tiêu đề */
+
+.page-content {
+    line-height: 1.7;
+    font-size: 1rem; /* Kích thước chữ nội dung lớn hơn một chút */
+    color: #CBD5E0;
+}
+.page-content h2 { /* Tiêu đề phụ trong các trang About, News */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem; /* To hơn */
+    color: #FFFFFF; /* Trắng */
+    margin-top: 40px; /* Tăng margin */
+    margin-bottom: 20px;
     padding-bottom: 10px;
+    border-bottom: 1px solid #4A5568; /* Viền tối hơn */
+}
+.page-content p {
+    margin-bottom: 20px;
+}
+.page-content ul {
+    list-style: disc;
+    margin-left: 20px;
+    margin-bottom: 20px;
 }
 
-.bird-result p {
-    margin-bottom: 10px;
-    line-height: 1.5;
-}
-
-.species-info {
-    margin-top: 15px;
-    padding: 15px;
-    background-color: #eef; /* Nền xanh nhạt cho thông tin */
-    border-left: 4px solid #5cb85c; /* Border trái màu xanh */
-    border-radius: 4px;
-    white-space: pre-wrap; /* Giữ định dạng xuống dòng từ API */
-    text-align: left;
-}
-
-.species-info h4 {
-    margin-top: 0;
-    color: #333;
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-.image-gallery {
-    margin-top: 15px;
-    border-top: 1px dashed #ccc; /* Đường gạch trên gallery */
-    padding-top: 15px;
-}
-
-.image-gallery h4 {
-    margin-top: 0;
-    color: #333;
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-.gallery-grid {
+/* News Page Specific */
+.news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Grid ảnh */
-    gap: 10px; /* Khoảng cách giữa các ảnh */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
 }
-
-.gallery-grid img {
+.news-article-card {
+    background: #2D3748; /* Nền tối hơn cho thẻ tin tức */
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+.news-article-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+    transform: translateY(-3px);
+}
+.news-article-card img {
     width: 100%;
-    height: 100px; /* Chiều cao cố định cho ảnh gallery */
-    object-fit: cover; /* Đảm bảo ảnh không bị méo */
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    height: 180px;
+    object-fit: cover;
+    opacity: 0.85; /* Giảm độ sáng ảnh một chút để chữ nổi hơn */
 }
-
-.info-unavailable {
-    font-style: italic;
-    color: #777;
-    margin-top: 15px;
-    text-align: left;
+.news-article-content {
+    padding: 20px; /* Tăng padding */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
-
-.audio-gallery {
-    margin-top: 15px;
-    border-top: 1px dashed #ccc;
-    padding-top: 15px;
-    text-align: left; /* Căn trái nội dung audio */
-}
-
-.audio-gallery h4 {
-    margin-top: 0;
-    color: #333;
-    text-align: left;
+.news-article-content h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem; /* To hơn */
     margin-bottom: 10px;
+    color: #FFFFFF; /* Trắng */
+    line-height: 1.3;
+}
+.news-article-content .article-meta {
+    font-size: 0.8rem; /* To hơn */
+    color: #A0AEC0; /* Xám nhạt */
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.news-article-content .article-excerpt {
+    font-size: 0.95rem; /* To hơn */
+    margin-bottom: 15px;
+    color: #CBD5E0; /* Xám nhạt hơn */
+    flex-grow: 1;
+}
+.news-article-content .read-more {
+    font-weight: 600;
+    color: #63B3ED; /* Xanh lam sáng */
+    font-size: 0.9rem; /* To hơn */
+    margin-top: auto;
+    align-self: flex-start;
+}
+.news-article-content .read-more:hover {
+    color: #90CDF4; /* Sáng hơn khi hover */
 }
 
-.audio-list p {
-    margin-bottom: 10px;
+
+/* ==== Responsive ==== */
+@media (max-width: 992px) {
+    .nav-links {
+        gap: 15px;
+    }
+    .search-container input[type="text"] {
+        min-width: 150px;
+    }
+     .bird-card {
+        height: 320px;
+    }
+    .bird-card-overlay h3 {
+        font-size: 1.2rem; /* Điều chỉnh lại cho tablet */
+    }
+    .bird-listing h1 {
+        font-size: 2.2rem;
+    }
+    .bird-listing-description {
+        font-size: 1rem;
+    }
+
 }
 
-.audio-list audio {
-    width: 100%; /* Cho trình phát âm thanh chiếm hết chiều rộng */
-    max-width: 400px; /* Giới hạn chiều rộng tối đa */
-    vertical-align: middle; /* Căn chỉnh với text nếu có */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .nav-links {
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 12px;
+  }
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+
+  .search-container {
+    width: 90%;
+    margin-top: 10px;
+  }
+
+  .bird-listing h1 {
+    font-size: 2rem; /* Giảm kích thước cho mobile */
+  }
+   .bird-listing-description {
+        font-size: 0.95rem;
+    }
+
+  .bird-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+   .bird-card {
+        height: 300px;
+    }
+  
+  .bird-detail-page .bird-header {
+    flex-direction: column;
+    padding: 15px;
+  }
+  .bird-detail-page .bird-info-detail h1 {
+      font-size: 2rem; /* Giảm cho mobile */
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-links {
+      justify-content: center;
+      margin-top: 15px;
+      align-items: center;
+  }
+  .page-hero h1, .hero-section h1 {
+      font-size: 2.5rem; /* Giảm cho mobile */
+  }
+  .page-hero p, .hero-section p {
+      font-size: 1.05rem; /* Giảm cho mobile */
+  }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 15px; /* Giảm font cơ bản cho màn hình nhỏ */
+    }
+    .bird-grid {
+        grid-template-columns: 1fr;
+        gap: 20px; /* Tăng gap cho single column */
+    }
+     .bird-card {
+        height: 340px; /* Có thể tăng chiều cao một chút cho single column */
+    }
+    .nav-links a {
+        padding: 8px 5px;
+        font-size: 0.8rem;
+    }
+    .search-container {
+        width: 100%;
+    }
+    .bird-card-overlay h3 {
+        font-size: 1.25rem;
+    }
+    .bird-listing h1 {
+        font-size: 1.8rem;
+    }
+     .bird-listing-description {
+        font-size: 0.9rem;
+    }
+    .bird-detail-page .bird-info-detail h1 {
+      font-size: 1.8rem;
+    }
+    .page-hero h1, .hero-section h1 {
+      font-size: 2rem;
+    }
+    .page-hero p, .hero-section p {
+      font-size: 1rem;
+    }
+}
+
+.bird-detail-page .bird-info-detail .status {
+    display: inline-block; 
+    background-color: #A0AEC0;
+    color: #1A202C;   
+    padding: 0.3em 0.7em;
+    border-radius: 15px;  
+    font-size: 0.85em;     
+    font-weight: 600;     
+    margin-right: 10px;   
+    margin-bottom: 15px;   
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bird-detail-page .bird-info-detail .status-least-concern {
+    background-color: #68D391;
+    color: #1A202C;
+}
+.bird-detail-page .bird-info-detail .status-endangered {
+    background-color: #F56565; 
+    color: #1A202C;
+}
+.bird-detail-page .bird-info-detail .status-vulnerable {
+     background-color: #F6E05E;
+     color: #1A202C;
 }

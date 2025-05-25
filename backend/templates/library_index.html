@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện về các loài chim Bắc Mỹ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+    <div class="logo">
+        <a href="{{ url_for('home_page') }}">BirdGuide</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
+        <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+        <li><a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a></li>
+        <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
+        <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
+    </ul>
+    <div class="search-container">
+        {# Sửa action của form tìm kiếm để trỏ đến trang library_index_page với query #}
+        <form action="{{ url_for('library_index_page') }}" method="GET">
+            <input type="text" id="bird-search-input-nav" name="query" placeholder="Tìm kiếm trong thư viện...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</nav>
+    </header>
+
+    <main class="container">
+        <section class="bird-listing">
+            <h1>Khám phá các loài chim</h1>
+            <p class="bird-listing-description">
+                Khám phá hơn 400 loài chim Bắc Mỹ, tìm hiểu về cuộc sống và môi trường sống của chúng, và cách biến đổi khí hậu đang tác động đến khả năng sinh tồn của chúng.
+            </p>
+            <div class="bird-grid" id="bird-grid-container">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>BirdGuide</h3>
+                <p>Khám phá thế giới các loài chim cùng chúng tôi.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
+    </footer>
+    
+    <script>
+    var birdsDataJsonUrl = "{{ url_for('static', filename='birds_data.json') }}";
+    var birdDetailBaseUrl = "{{ url_for('library_bird_detail_page', name='PLACEHOLDER') }}";
+</script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
