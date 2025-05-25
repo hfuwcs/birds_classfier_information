@@ -68,10 +68,7 @@
 4.  **Tải và Đặt các File Mô hình và Dữ liệu Thư viện:**
     Bạn cần có các file mô hình đã train (`best.pt`, `efficientnet_b3_bird_classifier.pth`) và file dữ liệu thư viện (`birds_data.json`).
     *   Đặt `best.pt` và `efficientnet_b3_bird_classifier.pth` vào thư mục `backend/`.
-        *   *(Nếu người dùng cần tải các file này từ nguồn khác, cung cấp link tại đây)*: [Link tải mô hình (ví dụ: Google Drive, Dropbox)...]
-        *   *(Nếu người dùng cần tự train, dẫn link hướng dẫn train)*: [Link đến hướng dẫn train mô hình...]
     *   Đặt `birds_data.json` vào thư mục `backend/static/`.
-        *   *(Nếu người dùng cần tải file này)*: [Link tải birds_data.json...]
 
 5.  **Thiết lập Google API Keys và Custom Search Engine:**
     *   Truy cập Google Cloud Console ([https://console.cloud.google.com/](https://console.cloud.google.com/)) để lấy **Google API Key**. Kích hoạt các API cần thiết (Custom Search API, Gemini API - nếu bạn dùng phiên bản từ GCP).
