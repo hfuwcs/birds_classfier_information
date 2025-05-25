@@ -175,3 +175,163 @@ h1, h2, h3, h4 {
     max-width: 400px; /* Giới hạn chiều rộng tối đa */
     vertical-align: middle; /* Căn chỉnh với text nếu có */
 }
+
+.drop-zone {
+    border: 2px dashed #ccc; /* Border đứt nét */
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    color: #777;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 20px; /* Khoảng cách dưới drop zone */
+    position: relative; /* Quan trọng cho việc định vị input file */
+}
+
+.drop-zone:hover {
+    border-color: #5cb85c; /* Đổi màu border khi hover */
+    color: #5cb85c;
+}
+
+.drop-zone.dragover { /* Class được thêm/bỏ bằng JS khi kéo file vào */
+    border-color: #4cae4c;
+    color: #4cae4c;
+    background-color: #e9f5e9; /* Nền nhẹ khi kéo vào */
+}
+
+/* Ẩn input file mặc định nhưng giữ nguyên chức năng click */
+.drop-zone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Làm cho nó trong suốt */
+    cursor: pointer;
+    z-index: 10; /* Đảm bảo nó nằm trên các nội dung khác */
+}
+
+.drop-zone .upload-icon {
+    font-size: 3em; /* Icon to */
+    margin-bottom: 10px;
+}
+
+.drop-zone .upload-text {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.drop-zone .upload-subtext {
+     font-size: 0.9em;
+     color: #999;
+}
+
+
+/* --- Cải thiện bố cục bên trong Bird Result Block --- */
+.bird-result {
+    /* Các style cơ bản (border, padding, background) đã có, giữ nguyên */
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.bird-result h3 {
+     /* Các style tiêu đề chim đã có, giữ nguyên */
+     margin-top: 0;
+     color: #555;
+     text-align: left;
+     border-bottom: 1px dashed #ccc;
+     padding-bottom: 10px;
+     margin-bottom: 15px; /* Tăng khoảng cách dưới tiêu đề */
+}
+
+.bird-result p {
+     margin-bottom: 10px;
+     line-height: 1.5;
+}
+
+/* Sử dụng Flexbox để các phần Info, Image, Audio nằm ngang nhau nếu không gian cho phép */
+.bird-result-content {
+     display: flex;
+     flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+     gap: 20px; /* Khoảng cách giữa các cột */
+}
+
+.species-info {
+    /* Style nền, border trái đã có, giữ nguyên */
+    flex: 1 1 300px; /* Cho phép co giãn, kích thước cơ sở 300px */
+    min-width: 280px; /* Kích thước tối thiểu */
+    margin-top: 0; /* Bỏ margin-top nếu đã có gap */
+}
+
+.image-gallery {
+    /* Style border trên đã có, giữ nguyên */
+    flex: 1 1 300px;
+    min-width: 280px;
+    margin-top: 0; /* Bỏ margin-top nếu đã có gap */
+    border-top: none; /* Bỏ border top ở đây, có thể thêm border nếu cần phân cách rõ */
+    padding-top: 0; /* Bỏ padding top */
+}
+
+.audio-gallery {
+     flex: 1 1 300px;
+     min-width: 280px;
+     margin-top: 0;
+     border-top: none;
+     padding-top: 0;
+}
+
+.gallery-grid {
+    /* Grid ảnh đã có, giữ nguyên */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Giảm kích thước ảnh trong gallery nếu cần */
+    gap: 8px; /* Giảm khoảng cách giữa ảnh */
+    margin-top: 10px; /* Khoảng cách dưới tiêu đề H4 */
+}
+
+.gallery-grid img {
+    /* Style ảnh trong gallery đã có, giữ nguyên */
+    width: 100%;
+    height: 80px; /* Giảm chiều cao */
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.audio-list p {
+     margin-bottom: 8px; /* Khoảng cách giữa các audio player */
+     font-size: 0.95em;
+}
+
+.audio-list audio {
+    /* Style audio player đã có, giữ nguyên */
+     width: 100%;
+     max-width: 400px;
+     vertical-align: middle;
+}
+
+
+.library-link {
+     display: inline-block; /* Cho phép margin/padding */
+     margin-top: 10px;
+     margin-bottom: 15px;
+     padding: 8px 15px;
+     background-color: #007bff; /* Màu xanh dương */
+     color: white;
+     text-decoration: none;
+     border-radius: 4px;
+     transition: background-color 0.3s ease;
+     font-size: 0.95em;
+}
+
+.library-link:hover {
+     background-color: #0056b3;
+     text-decoration: none;
+}
+
+.library-link i {
+     margin-left: 5px; /* Khoảng cách giữa text và icon */
+}

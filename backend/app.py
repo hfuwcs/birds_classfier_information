@@ -37,7 +37,6 @@ prompt_file_path = os.path.join(script_dir, 'static', 'prompt.txt')
 try:
     with open(prompt_file_path, 'r', encoding='utf-8') as f_prompt:
         prompt = f_prompt.read()
-    print(prompt)
 except FileNotFoundError:
     print(f"ERROR: The prompt file 'prompt.txt' was not found at {prompt_file_path}")
 except Exception as e:
@@ -924,7 +923,8 @@ def predict():
             result_filename = f"result_{timestamp}_{filename}"
             result_filepath = os.path.join(app.config['RESULT_FOLDER'], result_filename)
             cv2.imwrite(result_filepath, annotated_img)
-
+            
+            
             # --- Render template với tất cả kết quả ---
             return render_template('detection_page.html',
                                    result_image=url_for('static', filename=f'results/{result_filename}'),

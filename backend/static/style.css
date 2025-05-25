@@ -14,6 +14,8 @@ body {
   background-color: #1A202C; /* Màu nền tối chủ đạo (Audubon dark theme) */
   color: #E2E8F0; /* Màu chữ chính (xám nhạt) */
   font-size: 16px;
+  /* detection_tool_style.css had text-align: center; - removed to prioritize style.css layout */
+  /* detection_tool_style.css had padding: 20px; - handled by container/section padding */
 }
 
 a {
@@ -33,11 +35,15 @@ img {
   display: block;
 }
 
+/* Global Container - used across all pages */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 1200px; /* Prioritize style.css wider container */
+  margin: 0 auto; /* Căn giữa container */
+  padding: 20px; /* Global padding, sections/pages add their own */
+  /* detection_tool_style.css had background, border-radius, box-shadow, text-align here.
+     These are moved to a specific class for the detection tool's main content box. */
 }
+
 header {
   background-color: #2D3748; /* Nền header tối hơn một chút */
   border-bottom: 1px solid #4A5568; /* Đường viền tối hơn */
@@ -87,30 +93,30 @@ nav {
   color: #FFFFFF; /* Trắng khi active/hover */
   border-bottom: 2px solid #63B3ED; /* Viền xanh lam sáng */
 }
+
 .search-container {
-  display: flex; /* Quan trọng: Làm cho input và button nằm trên một hàng */
-  align-items: stretch; /* Quan trọng: Làm cho input và button có cùng chiều cao và thẳng hàng */
-  /* Bạn có thể thêm các thuộc tính khác cho search-container nếu cần,
-     ví dụ: margin-left: auto; để đẩy nó sang phải nếu nằm trong flex container khác */
+  display: flex;
+  align-items: stretch;
 }
+
 .search-container form {
-  display: flex; /* Làm cho input và button bên trong form cũng là flex items */
-  width: 100%; /* Cho form chiếm toàn bộ chiều rộng của .search-container */
-  align-items: stretch; /* Đồng bộ chiều cao cho input và button bên trong form */
+  display: flex;
+  width: 100%;
+  align-items: stretch;
 }
+
 .search-container input[type="text"] {
   padding: 10px 15px;
   border: 1px solid #4A5568;
   background-color: #2D3748;
   color: #E2E8F0;
-  border-right: none; /* Loại bỏ viền phải của input để nó liền với button */
+  border-right: none;
   border-radius: 20px 0 0 20px;
   outline: none;
   font-size: 0.9rem;
-  /* min-width: 200px; */ /* Có thể bỏ hoặc điều chỉnh */
-  flex-grow: 1; /* Cho phép input chiếm không gian còn lại */
+  flex-grow: 1;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  line-height: normal; /* Đảm bảo chiều cao chữ phù hợp */
+  line-height: normal;
 }
 
 .search-container input[type="text"]::placeholder {
@@ -125,22 +131,35 @@ nav {
 .search-container button {
   padding: 10px 15px;
   border: 1px solid #63B3ED;
-  /* border-left: none;  Không cần thiết nếu input đã có border-right: none; */
   background-color: #63B3ED;
   color: #1A202C;
   border-radius: 0 20px 20px 0;
   cursor: pointer;
-  font-size: 0.9rem; /* Đảm bảo icon không quá lớn */
+  font-size: 0.9rem;
   transition: background-color 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* Ngăn button bị co lại */
+  flex-shrink: 0;
 }
 
 .search-container button:hover {
   background-color: #4299E1;
 }
+
+/* Typography defaults for headings (used across site unless specific override) */
+h1, h2, h3, h4 {
+    font-family: 'Montserrat', sans-serif; /* Prioritize style.css font */
+    color: #FFFFFF; /* Prioritize style.css color */
+    /* detection_tool_style.css had text-align: center; globally for headings.
+       Apply this only where needed, e.g., main page titles or specific sections.
+       Default text-align in container/box will be left. */
+    margin-bottom: 15px;
+}
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.2rem; }
+
 
 /* ==== Main Content & Bird Listing (index.html) ==== */
 .bird-listing {
@@ -148,29 +167,25 @@ nav {
 }
 
 .bird-listing h1 { /* Tiêu đề "Guide to North American Birds" */
-  font-family: 'Montserrat', sans-serif; /* Hoặc "Merriweather" nếu muốn serif */
-  font-size: 2.8rem; /* Kích thước lớn như trong ảnh */
-  font-weight: 800; /* Rất đậm */
-  margin-bottom: 15px; /* Giảm margin dưới */
-  color: #FFFFFF; /* Màu trắng */
-  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  text-align: center; /* Specific alignment for this title */
 }
 
-/* Đoạn mô tả dưới tiêu đề lớn */
 .bird-listing-description {
   font-family: 'Lato', sans-serif;
   font-size: 1.1rem;
-  color: #A0AEC0; /* Màu xám nhạt hơn cho mô tả */
+  color: #A0AEC0;
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 40px auto; /* Căn giữa và thêm margin dưới */
+  margin: 0 auto 40px auto;
   line-height: 1.7;
 }
 
-
 .bird-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
 }
 
@@ -180,15 +195,15 @@ nav {
   overflow: hidden;
   height: 360px;
   background-size: cover;
-  background-position: center top; /* object-position: center top; đã set cho img */
+  background-position: center top;
   background-repeat: no-repeat;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Bóng đổ đậm hơn trên nền tối */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background-color: #2D3748; /* Màu nền cho thẻ nếu ảnh không tải được */
+  background-color: #2D3748; /* Fallback color */
 }
 
 .bird-card:hover {
@@ -205,13 +220,7 @@ nav {
     object-fit: cover;
     z-index: 1;
     transition: transform 0.35s ease-out;
-    .bird-card .card-bg-image {
-    /* ... */
-    /* Thử nghiệm các giá trị này: */
-    /* object-position: 50% 25%; */ /* Căn giữa ngang, dịch lên 25% từ đỉnh */
-    /* object-position: center 30%; */
-    object-position: center 30%;
-}
+    object-position: center 30%; /* Keep specific object position */
 }
 
 .bird-card:hover .card-bg-image {
@@ -222,48 +231,45 @@ nav {
   position: relative;
   z-index: 2;
   width: 100%;
-  /* Gradient tối hơn và rõ ràng hơn trên nền tối */
   background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0) 100%);
   color: white;
-  padding: 15px; /* Tăng padding một chút */
+  padding: 15px;
 }
 
 .bird-card-overlay h3 { /* Bird Name */
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.3rem; /* To hơn một chút */
+  font-size: 1.3rem;
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 3px; /* Giảm margin */
+  margin-bottom: 3px;
   line-height: 1.2;
-  /* text-shadow: none;  Bỏ shadow vì nền overlay đã đủ tối */
 }
 
 .bird-card-overlay .bird-category { /* Bird Category (e.g., OWLS) */
   font-family: 'Lato', sans-serif;
-  font-size: 0.8rem; /* To hơn một chút */
+  font-size: 0.8rem;
   font-weight: 400;
-  color: #CBD5E0; /* Sáng hơn một chút */
+  color: #CBD5E0;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 
 /* ==== Bird Detail Page (bird_info.html) ==== */
 .bird-detail-page .breadcrumb {
     font-size: 0.85rem;
     margin-bottom: 20px;
-    color: #A0AEC0; /* Màu breadcrumb xám nhạt */
+    color: #A0AEC0;
 }
 .bird-detail-page .breadcrumb a {
-    color: #63B3ED; /* Xanh lam sáng */
+    color: #63B3ED;
 }
 .bird-detail-page .bird-header {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
     margin-bottom: 30px;
-    background-color: #2D3748; /* Nền tối hơn cho phần thông tin */
-    padding: 25px; /* Tăng padding */
+    background-color: #2D3748;
+    padding: 25px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
@@ -280,28 +286,29 @@ nav {
 }
 .bird-detail-page .bird-info-detail h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.4rem; /* To hơn */
+    font-size: 2.4rem;
     margin-bottom: 10px;
-    color: #FFFFFF; /* Trắng */
+    color: #FFFFFF;
     line-height: 1.2;
+    text-align: left; /* Specific alignment for detail page h1 */
 }
 .bird-detail-page .bird-info-detail .scientific-name {
     font-family: 'Lato', sans-serif;
     font-style: italic;
     font-size: 1rem;
-    color: #A0AEC0; /* Xám nhạt */
+    color: #A0AEC0;
     margin-bottom: 15px;
 }
 .bird-detail-page .bird-info-detail p { /* Description */
-    font-size: 1rem; /* To hơn chút */
+    font-size: 1rem;
     line-height: 1.7;
-    color: #CBD5E0; /* Xám nhạt hơn */
+    color: #CBD5E0;
 }
 .bird-detail-page .back-link {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 18px;
-    background-color: #4A5568; /* Nút xám đậm */
+    background-color: #4A5568;
     color: #FFFFFF;
     text-decoration: none;
     border-radius: 4px;
@@ -309,17 +316,44 @@ nav {
     transition: background-color 0.3s ease;
 }
 .bird-detail-page .back-link:hover {
-    background-color: #718096; /* Xám nhạt hơn khi hover */
+    background-color: #718096;
     text-decoration: none;
 }
 .bird-detail-page .back-link i {
     margin-right: 8px;
 }
+.bird-detail-page .bird-info-detail .status {
+    display: inline-block;
+    background-color: #A0AEC0; /* Default status color */
+    color: #1A202C;
+    padding: 0.3em 0.7em;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bird-detail-page .bird-info-detail .status-least-concern {
+    background-color: #68D391; /* Green */
+    color: #1A202C;
+}
+.bird-detail-page .bird-info-detail .status-endangered {
+    background-color: #F56565; /* Red */
+    color: #1A202C;
+}
+.bird-detail-page .bird-info-detail .status-vulnerable {
+     background-color: #F6E05E; /* Yellow */
+     color: #1A202C;
+}
+
 
 /* ==== Footer ==== */
 footer {
-  background-color: #12161F; /* Nền footer rất tối */
-  color: #A0AEC0; /* Chữ footer xám nhạt */
+  background-color: #12161F;
+  color: #A0AEC0;
   padding: 50px 20px 30px;
   margin-top: 50px;
   font-size: 0.85rem;
@@ -343,7 +377,7 @@ footer {
 }
 .footer-logo p {
   font-size: 0.85rem;
-  color: #718096; /* Xám đậm hơn cho tagline */
+  color: #718096;
   max-width: 250px;
 }
 
@@ -360,7 +394,7 @@ footer {
     text-transform: uppercase;
 }
 .footer-links a {
-  color: #A0AEC0; /* Xám nhạt */
+  color: #A0AEC0;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -374,36 +408,35 @@ footer {
   text-align: center;
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid #2D3748; /* Viền tối */
+  border-top: 1px solid #2D3748;
   font-size: 0.8rem;
-  color: #718096; /* Xám đậm */
+  color: #718096;
 }
 
 /* ==== Generic Page Styles (for Home, News, About) ==== */
-.page-hero { /* Ví dụ: Trang Chủ */
-    background-color: transparent; /* Nền hero sẽ là ảnh */
-    padding: 80px 20px; /* Tăng padding */
+.page-hero {
+    background-color: transparent;
+    padding: 80px 20px;
     text-align: center;
     margin-bottom: 40px;
-    /* border-bottom: 1px solid #2D3748; */ /* Có thể bỏ border nếu dùng ảnh nền */
 }
 .page-hero h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3rem; /* To hơn */
+    font-size: 3rem;
     color: #FFFFFF;
     margin-bottom: 20px;
     font-weight: 700;
 }
 .page-hero p {
-    font-size: 1.15rem; /* To hơn */
-    color: #CBD5E0; /* Xám nhạt */
+    font-size: 1.15rem;
+    color: #CBD5E0;
     max-width: 700px;
     margin: 0 auto;
     line-height: 1.7;
 }
-/* Hero section đặc biệt cho trang chủ */
-.hero-section { /* Dùng cho home.html */
-    background: url('https://source.unsplash.com/1600x800/?birds,dark,forest') no-repeat center center/cover; /* Ảnh tối hơn */
+/* Hero section specific to home.html */
+.hero-section {
+    background: url('https://source.unsplash.com/1600x800/?birds,dark,forest') no-repeat center center/cover;
     color: white;
     padding: 100px 20px;
     text-align: center;
@@ -421,7 +454,7 @@ footer {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10, 15, 25, 0.65); /* Lớp phủ tối hơn */
+    background: rgba(10, 15, 25, 0.65);
 }
 .hero-section .hero-content {
     position: relative;
@@ -443,8 +476,8 @@ footer {
 }
 .hero-section .btn-explore {
     padding: 12px 30px;
-    background-color: #63B3ED; /* Xanh lam sáng */
-    color: #1A202C; /* Chữ tối */
+    background-color: #63B3ED;
+    color: #1A202C;
     text-decoration: none;
     border-radius: 5px;
     font-size: 1.1rem;
@@ -459,24 +492,23 @@ footer {
     font-family: 'Montserrat', sans-serif;
     font-size: 2.2rem;
     margin-bottom: 30px;
-    color: #FFFFFF; /* Trắng */
+    color: #FFFFFF;
     text-align: center;
 }
 
-
 .page-content {
     line-height: 1.7;
-    font-size: 1rem; /* Kích thước chữ nội dung lớn hơn một chút */
+    font-size: 1rem;
     color: #CBD5E0;
 }
-.page-content h2 { /* Tiêu đề phụ trong các trang About, News */
+.page-content h2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.8rem; /* To hơn */
-    color: #FFFFFF; /* Trắng */
-    margin-top: 40px; /* Tăng margin */
+    font-size: 1.8rem;
+    color: #FFFFFF;
+    margin-top: 40px;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #4A5568; /* Viền tối hơn */
+    border-bottom: 1px solid #4A5568;
 }
 .page-content p {
     margin-bottom: 20px;
@@ -494,7 +526,7 @@ footer {
     gap: 24px;
 }
 .news-article-card {
-    background: #2D3748; /* Nền tối hơn cho thẻ tin tức */
+    background: #2D3748;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     overflow: hidden;
@@ -510,42 +542,319 @@ footer {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    opacity: 0.85; /* Giảm độ sáng ảnh một chút để chữ nổi hơn */
+    opacity: 0.85;
 }
 .news-article-content {
-    padding: 20px; /* Tăng padding */
+    padding: 20px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 .news-article-content h3 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.25rem; /* To hơn */
+    font-size: 1.25rem;
     margin-bottom: 10px;
-    color: #FFFFFF; /* Trắng */
+    color: #FFFFFF;
     line-height: 1.3;
 }
 .news-article-content .article-meta {
-    font-size: 0.8rem; /* To hơn */
-    color: #A0AEC0; /* Xám nhạt */
+    font-size: 0.8rem;
+    color: #A0AEC0;
     margin-bottom: 12px;
     text-transform: uppercase;
 }
 .news-article-content .article-excerpt {
-    font-size: 0.95rem; /* To hơn */
+    font-size: 0.95rem;
     margin-bottom: 15px;
-    color: #CBD5E0; /* Xám nhạt hơn */
+    color: #CBD5E0;
     flex-grow: 1;
 }
 .news-article-content .read-more {
     font-weight: 600;
-    color: #63B3ED; /* Xanh lam sáng */
-    font-size: 0.9rem; /* To hơn */
+    color: #63B3ED;
+    font-size: 0.9rem;
     margin-top: auto;
     align-self: flex-start;
 }
 .news-article-content .read-more:hover {
-    color: #90CDF4; /* Sáng hơn khi hover */
+    color: #90CDF4;
+}
+
+
+/* ==== Detection Tool Specific Styles (detection_tool.html) ==== */
+/* Note: Assumes detection tool content is wrapped in <div class="container"><div class="detection-tool-main">...</div></div> */
+
+.detection-tool-main {
+    max-width: 900px; /* Keep specific width for tool content box */
+    margin: 20px auto; /* Center within the global container, add some top/bottom margin */
+    background: #2D3748; /* Dark background for the box */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Darker shadow */
+    text-align: left; /* Align content left inside the box */
+}
+
+.detection-tool-main h1,
+.detection-tool-main h2,
+.detection-tool-main h3,
+.detection-tool-main h4 {
+    color: #FFFFFF; /* Use site's white for headings */
+    text-align: center; /* Center headings within the tool box */
+    margin-bottom: 15px;
+}
+
+.upload-form {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #4A5568; /* Darker border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+    background-color: #1A202C; /* Dark background for form */
+}
+
+.upload-form input[type="file"] {
+    /* Style as needed, default is often fine with label/dropzone */
+}
+
+.upload-form button {
+    padding: 10px 20px;
+    background-color: #68D391; /* Keep green for action/success */
+    color: #1A202C; /* Dark text on green button */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    font-weight: 600; /* Make button text bold */
+}
+
+.upload-form button:hover {
+    background-color: #48BB78; /* Darker green on hover */
+}
+
+.error-message {
+    color: #F56565; /* Red for error */
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.result-container {
+    margin-top: 20px;
+    text-align: center; /* Center result image */
+}
+
+.result-container img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border: 1px solid #4A5568; /* Darker border */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25); /* Darker shadow */
+    border-radius: 4px;
+}
+
+.detection-details {
+    margin-top: 30px;
+    border-top: 1px solid #4A5568; /* Darker separator */
+    padding-top: 20px;
+}
+
+.bird-result {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #4A5568; /* Darker border */
+    border-radius: 8px;
+    background-color: #2D3748; /* Darker background for results */
+}
+
+.bird-result h3 {
+    margin-top: 0;
+    color: #E2E8F0; /* Lighter color for sub-headings */
+    text-align: left;
+    border-bottom: 1px dashed #4A5568; /* Darker dashed border */
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.bird-result p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: #CBD5E0; /* Lighter color for text */
+}
+
+/* Flexbox layout for bird result content */
+.bird-result-content {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 20px;
+}
+
+.species-info {
+    /* Base styles from detection_tool_style.css */
+    flex: 1 1 300px;
+    min-width: 280px;
+    padding: 15px;
+    border-left: 4px solid #68D391; /* Keep green accent border */
+    border-radius: 4px;
+    white-space: pre-wrap;
+    text-align: left;
+    /* Dark theme adjustments */
+    background-color: #3A455A; /* Specific dark shade for info box */
+    margin-top: 0; /* Handled by flex gap */
+}
+
+.species-info h4 {
+    margin-top: 0;
+    color: #FFFFFF; /* White heading */
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.image-gallery {
+    /* Base styles from detection_tool_style.css */
+    flex: 1 1 300px;
+    min-width: 280px;
+    padding-top: 15px; /* Keep padding top if needed */
+    text-align: left; /* Align gallery title left */
+    /* Dark theme adjustments */
+    margin-top: 0; /* Handled by flex gap */
+    border-top: none; /* Border handled by the main .detection-details or not needed with flex gap */
+}
+
+.image-gallery h4 {
+    margin-top: 0;
+    color: #FFFFFF; /* White heading */
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep refined grid */
+    gap: 8px; /* Keep refined gap */
+    margin-top: 10px;
+}
+
+.gallery-grid img {
+    height: 80px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center; 
+    justify-self: center;
+    border: 1px solid #4A5568;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.info-unavailable {
+    font-style: italic;
+    color: #A0AEC0;
+    margin-top: 15px;
+    text-align: left;
+}
+
+.audio-gallery {
+    flex: 1 1 300px;
+    min-width: 280px;
+    padding-top: 15px;
+    text-align: left;
+    margin-top: 0; 
+    border-top: none; 
+}
+
+.audio-gallery h4 {
+    margin-top: 0;
+    color: #FFFFFF;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.audio-list p {
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    color: #CBD5E0;
+}
+
+.audio-list audio {
+    width: 100%;
+    max-width: 400px;
+    vertical-align: middle;
+}
+
+.drop-zone {
+    border: 2px dashed #4A5568; 
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    color: #A0AEC0;
+    transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+    margin-bottom: 20px;
+    position: relative;
+    background-color: #1A202C;
+}
+
+.drop-zone:hover {
+    border-color: #68D391;
+    color: #68D391;
+}
+
+.drop-zone.dragover {
+    border-color: #48BB78;
+    color: #48BB78;
+    background-color: #2D3748;
+}
+
+.drop-zone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.drop-zone .upload-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.drop-zone .upload-text {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: #E2E8F0; /* Lighter text */
+}
+
+.drop-zone .upload-subtext {
+     font-size: 0.9em;
+     color: #A0AEC0; /* Use theme's gray */
+}
+
+.library-link {
+     display: inline-block;
+     margin-top: 10px;
+     margin-bottom: 15px;
+     padding: 8px 15px;
+     background-color: #63B3ED;
+     color: #1A202C;
+     text-decoration: none;
+     border-radius: 4px;
+     transition: background-color 0.3s ease;
+     font-size: 0.95em;
+     font-weight: 600;
+}
+
+.library-link:hover {
+     background-color: #4299E1; 
+     text-decoration: none;
+}
+
+.library-link i {
+     margin-left: 5px;
 }
 
 
@@ -557,11 +866,11 @@ footer {
     .search-container input[type="text"] {
         min-width: 150px;
     }
-     .bird-card {
+    .bird-card {
         height: 320px;
     }
     .bird-card-overlay h3 {
-        font-size: 1.2rem; /* Điều chỉnh lại cho tablet */
+        font-size: 1.2rem;
     }
     .bird-listing h1 {
         font-size: 2.2rem;
@@ -595,7 +904,7 @@ footer {
   }
 
   .bird-listing h1 {
-    font-size: 2rem; /* Giảm kích thước cho mobile */
+    font-size: 2rem;
   }
    .bird-listing-description {
         font-size: 0.95rem;
@@ -607,13 +916,14 @@ footer {
    .bird-card {
         height: 300px;
     }
-  
+
   .bird-detail-page .bird-header {
     flex-direction: column;
     padding: 15px;
   }
   .bird-detail-page .bird-info-detail h1 {
-      font-size: 2rem; /* Giảm cho mobile */
+      font-size: 2rem;
+      text-align: center;
   }
 
   .footer-content {
@@ -627,23 +937,50 @@ footer {
       align-items: center;
   }
   .page-hero h1, .hero-section h1 {
-      font-size: 2.5rem; /* Giảm cho mobile */
+      font-size: 2.5rem;
   }
   .page-hero p, .hero-section p {
-      font-size: 1.05rem; /* Giảm cho mobile */
+      font-size: 1.05rem;
   }
+
+  .detection-tool-main {
+      padding: 20px;
+  }
+  .upload-form {
+      flex-direction: column;
+      gap: 15px;
+  }
+  .upload-form input[type="file"],
+  .upload-form button {
+      width: 100%;
+      border-radius: 4px; 
+      border-right: 1px solid #4A5568; 
+      border-left: 1px solid #4A5568;
+  }
+   .upload-form button {
+       border: 1px solid #68D391;
+   }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); 
+        gap: 5px;
+    }
+    .gallery-grid img {
+        height: 60px;
+    }
+
 }
 
 @media (max-width: 480px) {
     body {
-        font-size: 15px; /* Giảm font cơ bản cho màn hình nhỏ */
+        font-size: 15px;
     }
     .bird-grid {
         grid-template-columns: 1fr;
-        gap: 20px; /* Tăng gap cho single column */
+        gap: 20px;
     }
      .bird-card {
-        height: 340px; /* Có thể tăng chiều cao một chút cho single column */
+        height: 340px;
     }
     .nav-links a {
         padding: 8px 5px;
@@ -670,31 +1007,4 @@ footer {
     .page-hero p, .hero-section p {
       font-size: 1rem;
     }
-}
-
-.bird-detail-page .bird-info-detail .status {
-    display: inline-block; 
-    background-color: #A0AEC0;
-    color: #1A202C;   
-    padding: 0.3em 0.7em;
-    border-radius: 15px;  
-    font-size: 0.85em;     
-    font-weight: 600;     
-    margin-right: 10px;   
-    margin-bottom: 15px;   
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.bird-detail-page .bird-info-detail .status-least-concern {
-    background-color: #68D391;
-    color: #1A202C;
-}
-.bird-detail-page .bird-info-detail .status-endangered {
-    background-color: #F56565; 
-    color: #1A202C;
-}
-.bird-detail-page .bird-info-detail .status-vulnerable {
-     background-color: #F6E05E;
-     color: #1A202C;
 }

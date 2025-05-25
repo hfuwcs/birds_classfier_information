@@ -27,8 +27,14 @@
     <div class="container">
         <h1>Công cụ Phát hiện & Phân loại Loài Chim</h1>
         <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" class="upload-form">
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit">Tải lên và Dự đoán</button>
+            {# Khu vực kéo thả bao quanh input file #}
+            <div id="drop-zone" class="drop-zone">
+                <input type="file" name="image" id="fileInput" accept="image/*" required>
+                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="upload-text">Kéo & thả ảnh chim vào đây</div>
+                <div class="upload-subtext">hoặc click để chọn file</div>
+            </div>
+            {# <button type="submit">Tải lên và Dự đoán</button> #}
         </form>
 
         {% if error_message %}
@@ -40,62 +46,62 @@
                 <h2>Kết quả Phát hiện trên Ảnh:</h2>
                 <img src="{{ result_image }}" alt="Kết quả Phát hiện và Phân loại">
             </div>
+        {% endif %}
 
-            {% if detection_results %}
-                <div class="detection-details">
-                    <h2>Chi tiết các Loài Chim được Phát hiện:</h2>
-                    {% for detection in detection_results %}
-                        <div class="bird-result">
-                            <h3>Chim {{ loop.index }}</h3>
-                            <p><strong>Phát hiện YOLO:</strong> {{ detection.yolo_class }} (Độ tin cậy: {{ detection.yolo_conf | round(2) }})</p>
-                            <p><strong>Phân loại Loài:</strong> {{ detection.species_name }} (Độ tin cậy: {% if detection.species_conf is not none %}{{ detection.species_conf | round(2) }}{% else %}N/A{% endif %})</p>
+        {% if detection_results %}
+            <div class="detection-details">
+                <h2>Chi tiết các Loài Chim được Phát hiện:</h2>
+                {% for detection in detection_results %}
+                    <div class="bird-result">
+                        <h3>Chim {{ loop.index }}</h3>
+                        <p><strong>Phát hiện YOLO:</strong> {{ detection.yolo_class }} (Độ tin cậy: {{ detection.yolo_conf | round(2) }})</p>
+                        <p><strong>Phân loại Loài:</strong> {{ detection.species_name }} (Độ tin cậy: {% if detection.species_conf is not none %}{{ detection.species_conf | round(2) }}{% else %}N/A{% endif %})</p>
 
-                            {# Thêm liên kết đến thư viện #}
-                            {% if detection.library_detail_url %}
-                                <p><a href="{{ detection.library_detail_url }}" class="library-link" target="_blank">Xem chi tiết về {{ detection.species_name }} trong thư viện <i class="fas fa-external-link-alt"></i></a></p>
-                            {% endif %}
+                        {# Thêm liên kết đến thư viện #}
+                        {% if detection.library_detail_url %}
+                            <p><a href="{{ detection.library_detail_url }}" class="library-link" target="_blank">Xem chi tiết về {{ detection.species_name }} trong thư viện <i class="fas fa-external-link-alt"></i></a></p>
+                        {% endif %}
 
-                            {% if detection.species_info and detection.species_info != "Không thể lấy thông tin chi tiết." %}
-                                <div class="species-info">
-                                    <h4>Thông tin về Loài {{ detection.species_name }}:</h4>
-                                    <p>{{ detection.species_info }}</p>
+                        {% if detection.species_info and detection.species_info != "Không thể lấy thông tin chi tiết." %}
+                            <div class="species-info">
+                                <h4>Thông tin về Loài {{ detection.species_name }}:</h4>
+                                <p>{{ detection.species_info }}</p>
+                            </div>
+                        {% elif detection.species_info %}
+                            <p class="info-unavailable">{{ detection.species_info }}</p>
+                        {% endif %}
+
+                        {% if detection.image_urls %}
+                            <div class="image-gallery">
+                                <h4>Hình ảnh của Loài {{ detection.species_name }}:</h4>
+                                <div class="gallery-grid">
+                                    {% for image_url in detection.image_urls %}
+                                        <img src="{{ image_url }}" alt="Hình ảnh của {{ detection.species_name }}">
+                                    {% endfor %}
                                 </div>
-                            {% elif detection.species_info %}
-                                <p class="info-unavailable">{{ detection.species_info }}</p>
-                            {% endif %}
+                            </div>
+                        {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
+                            <p class="info-unavailable">Không tìm thấy hình ảnh nào cho loài chim {{ detection.species_name }}.</p>
+                        {% endif %}
 
-                            {% if detection.image_urls %}
-                                <div class="image-gallery">
-                                    <h4>Hình ảnh của Loài {{ detection.species_name }}:</h4>
-                                    <div class="gallery-grid">
-                                        {% for image_url in detection.image_urls %}
-                                            <img src="{{ image_url }}" alt="Hình ảnh của {{ detection.species_name }}">
-                                        {% endfor %}
-                                    </div>
+                        {% if detection.audio_urls %}
+                            <div class="audio-gallery">
+                                <h4>Tiếng hót của Loài {{ detection.species_name }}:</h4>
+                                <div class="audio-list">
+                                    {% for audio_url in detection.audio_urls %}
+                                        <p>Bản ghi {{ loop.index }}: <audio controls src="{{ audio_url }}">
+                                            Trình duyệt của bạn không hỗ trợ phần tử audio.
+                                            <a href="{{ audio_url }}">Tải về bản ghi âm</a>.
+                                        </audio></p>
+                                    {% endfor %}
                                 </div>
-                            {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
-                                <p class="info-unavailable">Không tìm thấy hình ảnh nào cho loài chim {{ detection.species_name }}.</p>
-                            {% endif %}
-
-                            {% if detection.audio_urls %}
-                                <div class="audio-gallery">
-                                    <h4>Tiếng hót của Loài {{ detection.species_name }}:</h4>
-                                    <div class="audio-list">
-                                        {% for audio_url in detection.audio_urls %}
-                                            <p>Bản ghi {{ loop.index }}: <audio controls src="{{ audio_url }}">
-                                                Trình duyệt của bạn không hỗ trợ phần tử audio.
-                                                <a href="{{ audio_url }}">Tải về bản ghi âm</a>.
-                                            </audio></p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
-                                <p class="info-unavailable">Không tìm thấy bản ghi âm tiếng hót nào trên Xeno-Canto cho loài chim {{ detection.species_name }}.</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                            </div>
+                        {% elif detection.species_name and detection.species_name != "N/A" and not detection.species_name.startswith("Error") and not detection.species_name.startswith("Invalid") %}
+                            <p class="info-unavailable">Không tìm thấy bản ghi âm tiếng hót nào trên Xeno-Canto cho loài chim {{ detection.species_name }}.</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
     </div>
     <footer>
@@ -112,5 +118,6 @@
         </div>
         <p class="copyright">© 2025 BirdGuide. Bảo lưu mọi quyền.</p>
     </footer>
+    <script src="{{ url_for('static', filename='detection_tool_script.js') }}"></script>
 </body>
 </html>
