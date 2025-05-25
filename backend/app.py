@@ -78,7 +78,7 @@ gemini_model = None
 if GEMINI_API_KEY:
     try:
         genai.configure(api_key=GEMINI_API_KEY)
-        gemini_model = genai.GenerativeModel('gemini-1.5-flash') # Updated model name as per common practice, adjust if specific version needed
+        gemini_model = genai.GenerativeModel('gemini-2.5-flash-preview-04-17')
         print("Gemini API model configured.")
     except Exception as e:
         print(f"Lỗi khi cấu hình Gemini API model: {e}")
@@ -637,7 +637,7 @@ NUM_CLASSIFIER_CLASSES = len(CLASSIFIER_CLASSES)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# --- Tải Model YOLO (giữ nguyên) ---
+# --- Tải Model YOLO ---
 yolo_model = None
 try:
     yolo_model = YOLO(YOLO_MODEL_PATH)
@@ -646,7 +646,7 @@ except Exception as e:
     print(f"Error loading YOLO model '{YOLO_MODEL_PATH}': {e}")
     yolo_model = None
 
-# --- Tải Model Classifier (giữ nguyên) ---
+# --- Tải Model Classifier ---
 classifier_model = None
 try:
     classifier_model = efficientnet_b3(weights=None)
@@ -708,18 +708,15 @@ def library_bird_detail_page():
 
 @app.route('/news')
 def news_page():
-    # Giả sử bạn có news.html trong templates
     return render_template('news.html')
 
 @app.route('/about')
 def about_page():
-    # Giả sử bạn có about.html trong templates
     return render_template('about.html')
 
 # --- Route cho công cụ phát hiện ---
 @app.route('/detection_tool')
 def detection_tool_page():
-    # Đây là trang upload ảnh, tên cũ là index()
     return render_template('detection_page.html', result_image=None, detection_results=None, error_message=None)
 
 
@@ -884,7 +881,7 @@ def predict():
                     'species_info': species_info_gemini, 
                     'image_urls': google_image_urls,
                     'audio_urls': xeno_canto_audio_urls,
-                    'library_detail_url': library_detail_url # Thêm URL này
+                    'library_detail_url': library_detail_url
                 })
 
                 # --- Vẽ bounding box và label lên ảnh ---
@@ -923,7 +920,7 @@ def predict():
                 cv2.putText(annotated_img, label_text, (text_x_pos, text_y_pos - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 1, cv2.LINE_AA)
 
 
-            # --- Lưu ảnh kết quả (giữ nguyên) ---
+            # --- Lưu ảnh kết quả ---
             result_filename = f"result_{timestamp}_{filename}"
             result_filepath = os.path.join(app.config['RESULT_FOLDER'], result_filename)
             cv2.imwrite(result_filepath, annotated_img)
