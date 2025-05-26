@@ -24,7 +24,7 @@
     <div class="search-container">
         {# Sửa action của form tìm kiếm để trỏ đến trang library_index_page với query #}
         <form action="{{ url_for('library_index_page') }}" method="GET">
-            <input type="text" id="bird-search-input-nav" name="query" placeholder="Tìm kiếm trong thư viện...">
+            <input type="text" id="bird-search-input" name="query" placeholder="Tìm kiếm trong thư viện...">
             <button type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
