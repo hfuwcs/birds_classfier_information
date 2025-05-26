@@ -113,6 +113,7 @@
             <ul class="nav-links">
                 <li><a href="{{ url_for('home_page') }}" class="{{ 'active' if request.endpoint == 'home_page' else '' }}">Trang chủ</a></li>
                 <li><a href="{{ url_for('library_index_page') }}" class="{{ 'active' if request.endpoint == 'library_index_page' else '' }}">Khám phá</a></li>
+                <li><a href="{{ url_for('detection_tool_page') }}" class="{{ 'active' if request.endpoint == 'detection_tool_page' else '' }}">Công cụ Phát hiện</a></li>
                 <li><a href="{{ url_for('news_page') }}" class="{{ 'active' if request.endpoint == 'news_page' else '' }}">Tin tức</a></li>
                 <li><a href="{{ url_for('about_page') }}" class="{{ 'active' if request.endpoint == 'about_page' else '' }}">Về chúng tôi</a></li>
             </ul>
