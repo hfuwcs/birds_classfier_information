@@ -72,7 +72,7 @@
 
 5.  **Thiết lập Google API Keys và Custom Search Engine:**
     *   Truy cập Google Cloud Console ([https://console.cloud.google.com/](https://console.cloud.google.com/)) để lấy **Google API Key**. Kích hoạt các API cần thiết (Custom Search API, Gemini API - nếu bạn dùng phiên bản từ GCP).
-    *   Truy cập Google Programmable Search Engine control panel ([https://programmablesearchengine.google.com/controlpanel/](https://programmablesearchengine.google.com/controlpanel/)) để tạo một **Custom Search Engine** và lấy **Search Engine ID (cx)** của nó.
+    *   Truy cập Google Programmable Search Engine control panel ([https://programmablesearchengine.google.com](https://programmablesearchengine.google.com)) để tạo một **Custom Search Engine** và lấy **Search Engine ID (cx)** của nó.
     *   Truy cập Google AI Studio ([https://aistudio.google.com/](https://aistudio.google.com/)) nếu bạn sử dụng Gemini API riêng (không qua GCP) để lấy **Gemini API Key**.
     *   *(Lưu ý: Xeno-Canto API hiện tại không yêu cầu API key cho các truy vấn cơ bản mà ứng dụng sử dụng.)*
 
